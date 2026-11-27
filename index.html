@@ -188,23 +188,22 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-hub::before { inset: -12px; border: 1px dashed #6aa9b3; }
 .agent-hub::after { inset: -6px; border: 2px solid #56a6af; opacity: 0; }
 .agent-orbit {
-  position: absolute; inset: -12px; border-radius: 50%; pointer-events: none;
-  opacity: 0; transform: rotate(-28deg);
+  position: absolute; z-index: 1; inset: -13px; border-radius: 50%; pointer-events: none;
+  opacity: 1; transform: rotate(-28deg);
 }
 .agent-orbit::before, .agent-orbit::after {
   content: ""; position: absolute; border-radius: 50%; transform: translate(-50%, -50%);
 }
 .agent-orbit::before {
-  top: 0; left: 50%; width: 8px; height: 8px; background: #0f7888; box-shadow: 0 0 0 2px #e5f5f7;
+  top: 0; left: 50%; width: 11px; height: 11px; background: #087482; box-shadow: 0 0 0 2px #fff, 0 1px 4px #07405255;
 }
 .agent-orbit::after {
-  top: 86%; left: 15%; width: 6px; height: 6px; background: #b68b36; box-shadow: 0 0 0 2px #f6eedb;
+  top: 86%; left: 15%; width: 9px; height: 9px; background: #ac791c; box-shadow: 0 0 0 2px #fff, 0 1px 4px #6644004d;
 }
 .agent-demo.is-playing .agent-orbit { animation: agent-orbit-turn calc(4 * var(--agent-phase-gap)) linear both; }
 @keyframes agent-orbit-turn {
-  0% { opacity: 0; transform: rotate(-28deg); }
-  12%, 82% { opacity: 1; }
-  100% { opacity: .72; transform: rotate(332deg); }
+  from { transform: rotate(-28deg); }
+  to { transform: rotate(332deg); }
 }
 
 .agent-spoke path { fill: none; stroke: #9eb6c5; stroke-width: 1.6; stroke-dasharray: 4 6; stroke-linecap: round; }
@@ -231,8 +230,8 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 @keyframes agent-production-check { to { border-color: #218854; } }
 @keyframes agent-production-badge { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
-  .agent-demo.is-playing .agent-hub::after,
-  .agent-demo.is-playing .agent-orbit { animation: none; }
+  .agent-demo.is-playing .agent-hub::after { animation: none; }
+  .agent-demo.is-playing .agent-orbit { animation-timing-function: steps(8, end); }
   .agent-demo.is-playing .agent-activity > li[style] { animation: none; }
   .agent-demo.is-playing :is(.agent-spoke-signal, .agent-node, .agent-result),
   .agent-demo.is-playing .agent-node::after { animation-timing-function: step-end; }
