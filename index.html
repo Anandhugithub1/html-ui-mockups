@@ -148,34 +148,51 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2344566a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 12px center / 16px no-repeat;
 }
 .agent-picker .btn { margin-inline-start: auto; }
-.agent-summary { display: grid; gap: 22px; margin: 12px 0 0; }
-.agent-summary > div { position: relative; min-width: 0; padding: 12px 14px; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; }
-.agent-summary > div:last-child { background: var(--teal-bg); }
-.agent-summary > div:not(:last-child)::after {
-  content: ""; position: absolute; left: calc(50% - 4px); bottom: -15px;
-  width: 8px; height: 8px; border: solid var(--faint); border-width: 0 2px 2px 0; transform: rotate(45deg);
+.agent-canvas {
+  position: relative; margin-top: 12px; padding: 14px 14px 14px 50px; border: 1px solid var(--line); border-radius: 10px;
+  background: radial-gradient(circle, #cbd9e4 1px, transparent 1.2px) 0 0 / 14px 14px, #f4f8fa;
 }
-.agent-summary > div:nth-child(2) { --flow-delay: .7s; }
-.agent-summary > div:nth-child(3) { --flow-delay: 1.4s; }
-.agent-summary.is-playing > div { animation: agent-stage .8s var(--flow-delay, 0s) ease both; }
-@keyframes agent-stage {
-  18%, 75% { background: #c1e7ec; border-color: var(--teal); box-shadow: inset 0 0 0 2px var(--teal); }
+.agent-summary { display: grid; grid-auto-rows: 1fr; gap: 12px; margin: 0; }
+.agent-summary > div { position: relative; min-width: 0; padding: 12px 14px; background: var(--bg); border: 1px solid var(--line2); border-radius: 8px; }
+.agent-summary > div:last-child { background: var(--teal-bg); border-color: var(--teal-line); }
+.agent-summary > div::before {
+  content: ""; position: absolute; right: 100%; top: 50%; width: 27px; height: 2px; background: var(--line2);
 }
-@media (prefers-reduced-motion: no-preference) {
-  .agent-summary.is-playing > div:not(:last-child)::after { animation: agent-link .4s calc(var(--flow-delay, 0s) + .42s) ease both; }
+.agent-summary > div:nth-child(2) { --arrival: 1.2s; }
+.agent-summary > div:nth-child(3) { --arrival: 2.46s; }
+.agent-rail { position: absolute; inset: calc(100% / 6 + 5.33px) auto calc(100% / 6 + 5.33px) 23px; width: 2px; background: var(--line2); }
+.agent-token {
+  position: absolute; z-index: 1; top: 0; left: 50%; transform: translate(-50%, -50%);
+  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
+  border: 2px solid #fff; background: var(--teal); color: #fff; font-size: 12px; font-weight: 700;
+  box-shadow: 0 0 0 3px var(--teal-line), 0 3px 10px #0f6e7f55;
 }
-@keyframes agent-link {
-  50% { border-color: var(--teal-d); translate: var(--flow-link-x, 0) var(--flow-link-y, 4px); scale: 1.35; }
+.agent-canvas.is-playing .agent-token { animation: agent-travel-down 3s linear both; }
+.agent-canvas.is-playing .agent-summary > div { animation: agent-arrive .23s var(--arrival, 0s) ease both; }
+.agent-canvas.is-playing .agent-summary :is(dt, dd, strong) { animation: agent-arrive-text .23s var(--arrival, 0s) ease both; }
+@keyframes agent-travel-down {
+  0%, 12% { top: 0; }
+  40%, 54% { top: 50%; }
+  82%, 100% { top: 100%; }
 }
+@keyframes agent-travel-across {
+  0%, 12% { left: 0; }
+  40%, 54% { left: 50%; }
+  82%, 100% { left: 100%; }
+}
+@keyframes agent-arrive { to { background: var(--ink); border-color: var(--ink); } }
+@keyframes agent-arrive-text { to { color: #fff; } }
 .agent-summary dt { color: var(--teal-d); font-size: 13px; font-weight: 650; }
 .agent-summary strong { display: block; margin: 3px 0 2px; color: var(--ink); font-size: 16px; font-weight: 650; }
 .agent-summary dd { color: var(--body); font-size: 14px; line-height: 1.45; }
 @container (min-width: 720px) {
   .agent-demo { padding: 18px; }
-  .agent-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); --flow-link-x: 4px; --flow-link-y: 0; }
-  .agent-summary > div:not(:last-child)::after {
-    left: auto; right: -15px; top: calc(50% - 4px); bottom: auto; transform: rotate(-45deg);
-  }
+  .agent-canvas { padding: 46px 16px 16px; }
+  .agent-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
+  .agent-summary > div::before { right: auto; left: 50%; top: auto; bottom: 100%; width: 2px; height: 23px; }
+  .agent-rail { inset: 23px calc(100% / 6 + 3.33px) auto; width: auto; height: 2px; }
+  .agent-token { top: 50%; left: 0; }
+  .agent-canvas.is-playing .agent-token { animation-name: agent-travel-across; }
 }
 .replay { background: none; border: 1px solid var(--line2); border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 500; min-height: 32px; }
 .replay:hover { background: var(--soft); }
@@ -411,11 +428,14 @@ details.card[open] p { animation: pop .35s ease; }
       </select>
       <button class="btn" id="agent-replay" type="button">Play animation</button>
     </div>
-    <dl class="agent-summary" aria-live="polite" aria-atomic="true">
-      <div><dt>Trigger</dt><dd><strong></strong><span></span></dd></div>
-      <div><dt>Agent action</dt><dd><strong></strong><span></span></dd></div>
-      <div><dt>Outcome</dt><dd><strong></strong><span></span></dd></div>
-    </dl>
+    <div class="agent-canvas">
+      <div class="agent-rail" aria-hidden="true"><span class="agent-token">AI</span></div>
+      <dl class="agent-summary" aria-live="polite" aria-atomic="true">
+        <div><dt>Trigger</dt><dd><strong></strong><span></span></dd></div>
+        <div><dt>Agent action</dt><dd><strong></strong><span></span></dd></div>
+        <div><dt>Outcome</dt><dd><strong></strong><span></span></dd></div>
+      </dl>
+    </div>
   </div>
 </div></section>
 <section class="sec alt" id="stock"><div class="wrap feat">
@@ -655,8 +675,8 @@ details.card[open] p { animation: pop .35s ease; }
     ]
   };
   var agentExample = $("agent-example");
-  var agentSummary = document.querySelector(".agent-summary");
-  var summaryFields = agentSummary.querySelectorAll("dd");
+  var agentCanvas = document.querySelector(".agent-canvas");
+  var summaryFields = agentCanvas.querySelectorAll(".agent-summary dd");
   function showAgentExample() {
     examples[agentExample.value].forEach(function (step, index) {
       summaryFields[index].firstElementChild.textContent = step[0];
@@ -665,9 +685,9 @@ details.card[open] p { animation: pop .35s ease; }
   }
   function playAgentFlow() {
     agentFlowObserver?.disconnect();
-    agentSummary.classList.remove("is-playing");
-    void agentSummary.offsetWidth;
-    agentSummary.classList.add("is-playing");
+    agentCanvas.classList.remove("is-playing");
+    void agentCanvas.offsetWidth;
+    agentCanvas.classList.add("is-playing");
   }
   var motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
   var agentFlowObserver;
@@ -675,11 +695,11 @@ details.card[open] p { animation: pop .35s ease; }
     agentFlowObserver = new IntersectionObserver(function (entries) {
       if (entries[0].isIntersecting && !motionPreference.matches) playAgentFlow();
     }, { root: frame, threshold: 0.35 });
-    agentFlowObserver.observe(agentSummary);
+    agentFlowObserver.observe(agentCanvas);
   }
   agentExample.addEventListener("change", function () {
     showAgentExample();
-    if (motionPreference.matches) agentSummary.classList.remove("is-playing");
+    if (motionPreference.matches) agentCanvas.classList.remove("is-playing");
     else playAgentFlow();
   });
   $("agent-replay").addEventListener("click", playAgentFlow);
