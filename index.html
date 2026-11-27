@@ -151,20 +151,20 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 }
 .agent-activity .is-agent { background: var(--teal-bg); color: var(--teal-d); }
 .agent-activity p { font-size: 14px; line-height: 1.45; }
-.agent-demo.is-playing .agent-activity li { animation: agent-log-update 1.16s calc(var(--phase-start) + 250ms) var(--agent-ease) both; }
+.agent-demo.is-playing .agent-activity li[style] { animation: agent-log-update 1.16s calc(var(--phase-start) + 250ms) var(--agent-ease) both; }
 @keyframes agent-log-update { 24%, 73% { background: #eef7f9; } }
 .agent-result { padding: 10px 16px; color: #164f37; background: #eef8f2; font-size: 14px; font-weight: 650; }
 .agent-result span { margin-right: 4px; }
 .agent-demo.is-playing .agent-result { animation: agent-production-done .38s calc(4 * var(--agent-phase-gap)) var(--agent-ease) both; }
 @keyframes agent-production-done { to { background: #dff2e8; } }
 .agent-canvas {
-  padding: 16px 14px; border-bottom: 3px solid #0f6e7f;
+  position: relative; height: clamp(190px, 24cqw, 224px); border-bottom: 3px solid #0f6e7f;
   background: radial-gradient(circle, #ccdce8 1px, transparent 1.4px) 0 0 / 16px 16px, #f3f8fb;
 }
 .agent-hub {
-  position: relative; z-index: 2; grid-column: 1 / -1; grid-row: 1; place-self: center;
-  display: grid; place-items: center; width: 77px; aspect-ratio: 1; border-radius: 50%;
-  color: #fff; background: #0f293c; font-size: 17px; font-weight: 700;
+  z-index: 2; left: 50%; top: 63%;
+  display: grid; place-items: center; width: clamp(62px, 14cqw, 80px); aspect-ratio: 1; border-radius: 50%;
+  color: #fff; background: #0f293c; font-size: clamp(14px, 3cqw, 17px); font-weight: 700;
   box-shadow: 0 0 0 7px #dceef2, 0 4px 14px #163e5533;
 }
 .agent-hub::before, .agent-hub::after {
@@ -176,13 +176,13 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-spoke .agent-spoke-signal { stroke: #168171; stroke-width: 2.4; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
 .agent-demo.is-playing .agent-spoke-signal { animation: agent-production-link .92s var(--phase-start) var(--agent-ease) both; }
 .agent-demo.is-playing .agent-hub::after { animation: agent-production-pulse var(--agent-phase-gap) var(--agent-ease) 4; }
-.agent-demo.is-playing .agent-node { animation: agent-production-check .41s calc(var(--phase-start) + 720ms + var(--step-offset)) var(--agent-ease) both; }
+.agent-demo.is-playing .agent-node { animation: agent-production-check .41s calc(var(--phase-start) + 720ms) var(--agent-ease) both; }
 .agent-node::after {
   content: ""; position: absolute; top: -6px; right: -5px; width: 17px; height: 17px; border-radius: 50%;
   background: #177848 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 8 2.5 2.5L12 5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 13px no-repeat;
   opacity: 0;
 }
-.agent-demo.is-playing .agent-node::after { animation: agent-production-badge .28s calc(var(--phase-start) + 870ms + var(--step-offset)) var(--agent-ease) both; }
+.agent-demo.is-playing .agent-node::after { animation: agent-production-badge .28s calc(var(--phase-start) + 870ms) var(--agent-ease) both; }
 @keyframes agent-production-link { from { opacity: .8; } to { stroke-dashoffset: 0; opacity: .62; } }
 @keyframes agent-production-pulse {
   from { opacity: .6; transform: scale(.97); }
@@ -192,56 +192,19 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 @keyframes agent-production-badge { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .agent-demo.is-playing .agent-hub::after { animation: none; }
-  .agent-demo.is-playing .agent-activity li { animation: none; }
+  .agent-demo.is-playing .agent-activity li[style] { animation: none; }
   .agent-demo.is-playing :is(.agent-spoke-signal, .agent-node, .agent-result),
   .agent-demo.is-playing .agent-node::after { animation-timing-function: step-end; }
 }
-.agent-graph {
-  display: grid; position: relative; grid-template-columns: minmax(0, .83fr) minmax(0, 1.55fr);
-  gap: 14px 18px; padding-inline: 16px 9px;
+.agent-node, .agent-hub { position: absolute; transform: translate(-50%, -50%); }
+.agent-node {
+  z-index: 1; left: var(--x); top: var(--y); display: grid; place-items: center;
+  width: min(var(--node-width, 34%), 220px); min-height: 46px; padding: 6px 8px;
+  border: 1px solid #a3b9c9; border-radius: 10px; background: var(--bg); color: var(--ink);
+  font-size: clamp(12px, 2.65cqw, 17px); font-weight: 650; line-height: 1.25; text-align: center;
 }
-.agent-steps { display: contents; list-style: none; }
-.agent-node, .agent-entry {
-  position: relative; z-index: 1; display: grid; align-content: center; min-width: 0; min-height: 54px;
-  grid-row: calc(var(--mobile-row) + 1); padding: 8px; border: 1px solid var(--node-border); border-radius: 8px;
-  color: var(--node-ink); background: var(--node-bg); text-align: center; line-height: 1.2;
-}
-.agent-node { grid-column: 2; border-inline-start: 3px solid var(--node-accent); }
-.agent-entry {
-  grid-column: 1; --node-bg: #e2ebf4; --node-border: #97afc4; --node-ink: var(--ink);
-}
-.agent-node strong, .agent-entry strong { font-size: 14px; font-weight: 700; }
-.agent-node span, .agent-entry span { margin-top: 3px; font-size: 12px; }
-.agent-canvas .design {
-  --node-bg: #fff; --node-border: #a4c1e1; --node-ink: #163a62; --node-active: #d9ebff; --node-accent: #2867ad;
-}
-.agent-canvas .casting {
-  --node-bg: #fff; --node-border: #9ec6b5; --node-ink: #174c3b; --node-active: #d9f1e5; --node-accent: #217659;
-}
-.agent-canvas .finish {
-  --node-bg: #fff; --node-border: #d7afc7; --node-ink: #63304f; --node-active: #f4dfed; --node-accent: #963e74;
-}
-.agent-edges { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.agent-edges .agent-route-casing,
-.agent-edges .agent-route { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.agent-edges .agent-route-casing { stroke: #f3f8fb; stroke-width: 7; }
-.agent-edges .agent-route { stroke: #425e75; stroke-width: 1.6; marker-end: url(#agent-arrow); }
-.agent-edges .agent-route[data-branch] { stroke: #687f93; stroke-dasharray: 4 4; marker-end: url(#agent-entry-arrow); }
-
-.agent-legend {
-  display: flex; flex-wrap: wrap; gap: 7px 18px; margin: 14px 2px 0; padding: 0;
-  color: var(--body); font-size: 13px; list-style: none;
-}
-.agent-legend li { display: flex; align-items: center; gap: 6px; }
-.agent-legend li::before {
-  content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--node-accent);
-}
-@container (min-width: 720px) {
-  .agent-canvas { padding: 16px 20px; }
-  .agent-graph { grid-template-columns: repeat(2, minmax(0, 1fr)) 80px repeat(2, minmax(0, 1fr)); gap: 26px 20px; padding-inline: 8px 20px; }
-  .agent-node, .agent-entry { grid-column: var(--col); grid-row: var(--row, 1); }
-  .agent-hub { grid-column: 3; grid-row: 3 / 5; }
-}
+.agent-node.side { --node-width: 27%; }
+.agent-edges { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .replay { background: none; border: 1px solid var(--line2); border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 500; min-height: 32px; }
 .replay:hover { background: var(--soft); }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -465,58 +428,26 @@ details.card[open] p { animation: pop .35s ease; }
   <h2 class="t">See an AI agent at work</h2>
   <div class="win agent-demo">
     <div class="top agent-demo-head"><h3>Agent run · Coordinate production</h3></div>
-    <div class="agent-canvas">
-
-    <div class="agent-graph">
-      <svg class="agent-edges" aria-hidden="true">
-        <defs>
-          <marker id="agent-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L8 4 0 8 2 4Z" fill="#425e75"/></marker>
-          <marker id="agent-entry-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4 0 8 2 4Z" fill="#687f93"/></marker>
-        </defs>
-
-        <g class="agent-spokes">
-          <g class="agent-spoke" data-step="3"><path/><path class="agent-spoke-signal" pathLength="1"/></g>
-          <g class="agent-spoke" data-step="7"><path/><path class="agent-spoke-signal" pathLength="1"/></g>
-          <g class="agent-spoke" data-step="11"><path/><path class="agent-spoke-signal" pathLength="1"/></g>
-          <g class="agent-spoke" data-step="15"><path/><path class="agent-spoke-signal" pathLength="1"/></g>
-        </g>
-
-        <g class="agent-process-edges"></g>
+    <div class="agent-canvas" role="group" aria-label="The Agent coordinates four production phases">
+      <svg class="agent-edges" viewBox="0 0 1000 260" preserveAspectRatio="none" aria-hidden="true">
+        <g class="agent-spoke" style="--phase:0"><path d="M500 163.8L290 62.4" vector-effect="non-scaling-stroke"/><path class="agent-spoke-signal" d="M500 163.8L290 62.4" pathLength="1" vector-effect="non-scaling-stroke"/></g>
+        <g class="agent-spoke" style="--phase:1"><path d="M500 163.8L710 62.4" vector-effect="non-scaling-stroke"/><path class="agent-spoke-signal" d="M500 163.8L710 62.4" pathLength="1" vector-effect="non-scaling-stroke"/></g>
+        <g class="agent-spoke" style="--phase:2"><path d="M500 163.8H160" vector-effect="non-scaling-stroke"/><path class="agent-spoke-signal" d="M500 163.8H160" pathLength="1" vector-effect="non-scaling-stroke"/></g>
+        <g class="agent-spoke" style="--phase:3"><path d="M500 163.8H840" vector-effect="non-scaling-stroke"/><path class="agent-spoke-signal" d="M500 163.8H840" pathLength="1" vector-effect="non-scaling-stroke"/></g>
       </svg>
+      <div class="agent-node" style="--x:29%;--y:24%;--phase:0">Design &amp; tooling</div>
+      <div class="agent-node" style="--x:71%;--y:24%;--phase:1">Wax &amp; casting</div>
+      <div class="agent-node side" style="--x:16%;--y:63%;--phase:2">Finishing &amp; QC</div>
+      <div class="agent-node side" style="--x:84%;--y:63%;--phase:3">Packing &amp; shipping</div>
       <div class="agent-hub">Agent</div>
-      <div class="agent-entry" data-entry="1" style="--col:1;--mobile-row:1"><strong>New SKU</strong><span>Start at step 1</span></div>
-      <div class="agent-entry" data-entry="4" style="--col:4;--mobile-row:4"><strong>Master exists</strong><span>Start at step 4</span></div>
-      <div class="agent-entry" data-entry="5" style="--col:5;--mobile-row:5"><strong>Rubber mold exists</strong><span>Reorder at step 5</span></div>
-      <ol class="agent-steps" role="list" aria-label="Production steps">
-        <li class="agent-node design" style="--col:1;--row:2;--mobile-row:1"><strong>1. CAD</strong><span>3D design</span></li>
-        <li class="agent-node design" style="--col:2;--row:2;--mobile-row:2"><strong>2. 3D printing</strong><span>1 wax piece per SKU</span></li>
-        <li class="agent-node design" style="--col:4;--row:2;--mobile-row:3"><strong>3. Master model</strong><span>Silver or brass</span></li>
-        <li class="agent-node design" style="--col:5;--row:2;--mobile-row:4"><strong>4. Rubber mold</strong><span>Made from the master</span></li>
-        <li class="agent-node casting" style="--col:5;--row:3;--mobile-row:5"><strong>5. Wax injection</strong><span>About 100 wax pieces</span></li>
-        <li class="agent-node casting" style="--col:4;--row:3;--mobile-row:6"><strong>6. Wax setting</strong><span>Prepare wax pieces</span></li>
-        <li class="agent-node casting" style="--col:2;--row:3;--mobile-row:7"><strong>7. Wax tree</strong><span>Assemble the tree</span></li>
-        <li class="agent-node casting" style="--col:1;--row:3;--mobile-row:8"><strong>8. Casting</strong><span>Cast and clean</span></li>
-        <li class="agent-node casting" style="--col:1;--row:4;--mobile-row:9"><strong>9. Tree cutting</strong><span>Cut pieces from the tree</span></li>
-        <li class="agent-node finish" style="--col:2;--row:4;--mobile-row:10"><strong>10. Finishing</strong><span>Filing, tumbling, pre-polish and polish</span></li>
-        <li class="agent-node finish" style="--col:4;--row:4;--mobile-row:11"><strong>11. Stone setting</strong><span>Set stones and diamonds</span></li>
-        <li class="agent-node finish" style="--col:5;--row:4;--mobile-row:12"><strong>12. Plating</strong><span>Color or rhodium finish</span></li>
-        <li class="agent-node finish" style="--col:5;--row:5;--mobile-row:13"><strong>13. Quality control</strong><span>Inspect finished pieces</span></li>
-        <li class="agent-node finish" style="--col:4;--row:5;--mobile-row:14"><strong>14. Packing &amp; tagging</strong><span>Prepare for dispatch</span></li>
-        <li class="agent-node finish" style="--col:2;--row:5;--mobile-row:15"><strong>15. Shipping</strong><span>Send to the customer</span></li>
-      </ol>
     </div>
-    <ul class="agent-legend" role="list" aria-label="Production phases">
-      <li class="design">Design &amp; tooling</li>
-      <li class="casting">Wax &amp; casting</li>
-      <li class="finish">Finishing &amp; dispatch</li>
+    <ul class="agent-activity" role="list" aria-label="Production activity and starting routes">
+      <li><span>Routing</span><p>New SKU starts at CAD. An existing master starts at rubber mold. An existing rubber mold starts at wax injection.</p></li>
+      <li style="--phase:0"><span class="is-agent">Design</span><p>CAD, 3D printing, master model, and rubber mold preparation.</p></li>
+      <li style="--phase:1"><span>Casting</span><p>Wax injection, wax setting, wax tree assembly, casting, and tree cutting.</p></li>
+      <li style="--phase:2"><span class="is-agent">Finishing</span><p>Filing, tumbling, pre-polish and polish, followed by stone setting, plating, and quality control.</p></li>
+      <li style="--phase:3"><span>Dispatch</span><p>Pack and tag the finished pieces, then ship them to the customer.</p></li>
     </ul>
-    </div>
-    <ol class="agent-activity" role="list" aria-label="Production activity">
-      <li style="--phase:0"><span class="is-agent">Agent</span><p>Checks the SKU and routes design, printing, and mold preparation.</p></li>
-      <li style="--phase:1"><span>Casting</span><p>Receives the work order for wax preparation, casting, and tree cutting.</p></li>
-      <li style="--phase:2"><span class="is-agent">Agent</span><p>Coordinates finishing, stone setting, plating, and quality control.</p></li>
-      <li style="--phase:3"><span>Dispatch</span><p>Packs and tags the finished pieces for shipping.</p></li>
-    </ol>
     <p class="agent-result"><span aria-hidden="true">✓</span> Production handoffs coordinated from CAD to shipping.</p>
   </div>
 
@@ -724,114 +655,6 @@ details.card[open] p { animation: pop .35s ease; }
   pp.addEventListener("click", function () { paused = !paused; label(); if (paused) clearTimeout(loopT); else run(); });
   restart(); label(); run();
 
-  var agentGraph = document.querySelector(".agent-graph");
-  var agentEdges = agentGraph.querySelector(".agent-process-edges");
-  var agentNodes = Array.from(agentGraph.querySelectorAll(".agent-node"));
-  var agentEntries = Array.from(agentGraph.querySelectorAll(".agent-entry"));
-  var agentHub = agentGraph.querySelector(".agent-hub");
-  var agentSpokes = Array.from(agentGraph.querySelectorAll(".agent-spoke"));
-  var productionStarts = [0, 4, 9, 13];
-  agentNodes.forEach(function (node, index) {
-    var phase = index < 4 ? 0 : index < 9 ? 1 : index < 13 ? 2 : 3;
-    node.style.setProperty("--phase", phase);
-    node.style.setProperty("--step-offset", (index - productionStarts[phase]) * 65 + "ms");
-  });
-
-  function drawAgentFlow() {
-    var bounds = agentGraph.getBoundingClientRect();
-    var desktop = agentEntries[0].offsetTop === agentEntries[1].offsetTop;
-    function box(node) {
-      var r = node.getBoundingClientRect();
-      return {
-        left: r.left - bounds.left, right: r.right - bounds.left,
-        top: r.top - bounds.top, bottom: r.bottom - bounds.top,
-        x: (r.left + r.right) / 2 - bounds.left, y: (r.top + r.bottom) / 2 - bounds.top
-      };
-    }
-    var edgeIndex = 0;
-    function connector(points) {
-      var route = points.filter(function (point, index) {
-        return !index || point[0] !== points[index - 1][0] || point[1] !== points[index - 1][1];
-      });
-      var geometry = "M" + route[0].join(" ");
-      for (var i = 1; i < route.length - 1; i++) {
-        var point = route[i];
-        function toward(neighbor) {
-          var x = neighbor[0] - point[0], y = neighbor[1] - point[1];
-          var length = Math.hypot(x, y);
-          var fraction = Math.min(7 / length, .5);
-          return [point[0] + x * fraction, point[1] + y * fraction].join(" ");
-        }
-        geometry += "L" + toward(route[i - 1]) + "Q" + point.join(" ") + " " + toward(route[i + 1]);
-      }
-      return geometry + "L" + route[route.length - 1].join(" ");
-    }
-
-    function edge(points, branch) {
-      var geometry = connector(points);
-      function path(kind) {
-        var element = agentEdges.children[edgeIndex++];
-        if (!element) {
-          element = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          element.setAttribute("class", kind);
-          agentEdges.appendChild(element);
-        }
-        element.setAttribute("d", geometry);
-        return element;
-      }
-      path("agent-route-casing");
-      var route = path("agent-route");
-      if (branch) route.setAttribute("data-branch", "");
-    }
-    var nodes = agentNodes.map(box);
-    var entries = agentEntries.map(box);
-    nodes.slice(1).forEach(function (next, i) {
-      var from = nodes[i];
-      if (from.top === next.top) {
-        var forward = from.x < next.x;
-        edge([[forward ? from.right : from.left, from.y], [forward ? next.left - 3 : next.right + 3, next.y]]);
-      } else {
-        edge([[from.x, from.bottom], [next.x, next.top - 3]]);
-      }
-    });
-    entries.forEach(function (from, i) {
-      var to = nodes[Number(agentEntries[i].dataset.entry) - 1];
-      if (!desktop) {
-        edge([[from.right, from.y], [to.left - 3, to.y]], true);
-      } else if (i === 2) {
-        var right = bounds.width - 5;
-        edge([[from.right, from.y], [right, from.y], [right, to.y], [to.right + 3, to.y]], true);
-      } else {
-        var turn = (from.bottom + to.top) / 2;
-        edge([[from.x, from.bottom], [from.x, turn], [to.x, turn], [to.x, to.top - 3]], true);
-      }
-    });
-    var hub = box(agentHub);
-    agentSpokes.forEach(function (spoke, index) {
-      var target = nodes[Number(spoke.dataset.step) - 1];
-      var d;
-      if (desktop) {
-        var left = target.x < hub.x;
-        var x = left ? target.right + 3 : target.left - 3;
-        var y = index < 2 ? target.top + 13 : target.bottom - 13;
-        var startX = index === 0 || index === 3 ? hub.x : left ? hub.left + 4 : hub.right - 4;
-        var startY = index === 0 ? hub.top : index === 3 ? hub.bottom : hub.y;
-        var bend = (startX + x) / 2;
-        d = "M" + startX + " " + startY + " C" + bend + " " + startY + " " + bend + " " + y + " " + x + " " + y;
-      } else {
-        var lane = 2 + index * 3.5;
-        var endY = target.y - 10;
-        d = "M" + (hub.left + 8) + " " + (hub.y + 7 + index * 4) +
-          " C" + lane + " " + hub.bottom + " " + lane + " " + hub.bottom + " " + lane + " " + (hub.bottom + 23) +
-          " V" + (endY - 10) + " Q" + lane + " " + endY + " " + (lane + 10) + " " + endY + " H" + (target.left - 3);
-      }
-      spoke.querySelectorAll("path").forEach(function (path) { path.setAttribute("d", d); });
-      spoke.style.setProperty("--phase", index);
-    });
-  }
-
-  drawAgentFlow();
-  if (window.ResizeObserver) new ResizeObserver(drawAgentFlow).observe(agentGraph);
   var productionDemo = document.querySelector(".agent-demo");
   var productionCanvas = productionDemo.querySelector(".agent-canvas");
   if (window.IntersectionObserver) {
