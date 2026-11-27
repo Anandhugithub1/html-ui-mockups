@@ -141,8 +141,33 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 /* agents */
 .agent-canvas {
   margin-top: 20px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; --agent-hop: 300ms;
-  background: radial-gradient(circle, #d7e2eb 1px, transparent 1.2px) 0 0 / 16px 16px, #f7fafc;
+  background: radial-gradient(circle, #c9d8e5 1px, transparent 1.2px) 0 0 / 16px 16px, #edf3f8;
 }
+.agent-run { display: grid; gap: 9px; margin: 0 2px 13px; }
+.agent-run-copy { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.agent-run-badge {
+  flex: none; padding: 3px 7px; border-radius: 4px; background: #123450; color: #fff;
+  font-size: 12px; font-weight: 700; line-height: 1.3;
+}
+.agent-run-status { display: grid; min-width: 0; font-size: 13px; font-weight: 650; }
+.agent-caption { grid-area: 1 / 1; color: var(--node-ink, #123450); visibility: hidden; }
+.agent-caption:first-child { visibility: visible; }
+.agent-canvas.is-playing .agent-caption {
+  visibility: hidden;
+  animation: agent-caption calc(var(--span) * var(--agent-hop)) calc(var(--start) * var(--agent-hop)) step-end;
+}
+.agent-canvas.is-playing .agent-caption.is-final { animation: agent-run-done 0s var(--agent-duration) both; }
+.agent-run-progress { height: 3px; overflow: hidden; border-radius: 3px; background: #c9d9e7; }
+.agent-run-progress span { display: block; height: 100%; background: #285a86; transform: scaleX(0); transform-origin: left; }
+.agent-canvas.is-playing .agent-run-progress span { animation: agent-progress var(--agent-duration) linear both; }
+@keyframes agent-caption { from { visibility: visible; } to { visibility: hidden; } }
+@keyframes agent-run-done { from { visibility: hidden; } to { visibility: visible; } }
+@keyframes agent-progress { to { transform: scaleX(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .agent-canvas .agent-packet { visibility: hidden; }
+  .agent-canvas.is-playing .agent-run-progress span { animation-timing-function: steps(15, end); }
+}
+
 .agent-graph {
   display: grid; position: relative; grid-template-columns: minmax(0, .83fr) minmax(0, 1.55fr);
   gap: 14px 18px; padding-inline: 2px;
@@ -155,18 +180,18 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 }
 .agent-node { grid-column: 2; border-inline-start: 3px solid var(--node-accent); }
 .agent-entry {
-  grid-column: 1; --node-bg: #f0f5f9; --node-border: #a5b8c7; --node-ink: var(--ink);
+  grid-column: 1; --node-bg: #e2ebf4; --node-border: #97afc4; --node-ink: var(--ink);
 }
 .agent-node strong, .agent-entry strong { font-size: 14px; font-weight: 700; }
 .agent-node span, .agent-entry span { margin-top: 3px; font-size: 12px; }
-.agent-node.design, .agent-legend .design {
-  --node-bg: #f4efff; --node-border: #c9b9ef; --node-ink: #3c2476; --node-active: #e9dfff; --node-accent: #6948ad;
+.agent-canvas .design {
+  --node-bg: #fff; --node-border: #a4c1e1; --node-ink: #163a62; --node-active: #d9ebff; --node-accent: #2867ad;
 }
-.agent-node.casting, .agent-legend .casting {
-  --node-bg: #eaf8f3; --node-border: #9acfc0; --node-ink: #0e4b40; --node-active: #d3f1e7; --node-accent: #087763;
+.agent-canvas .casting {
+  --node-bg: #fff; --node-border: #9ec6b5; --node-ink: #174c3b; --node-active: #d9f1e5; --node-accent: #217659;
 }
-.agent-node.finish, .agent-legend .finish {
-  --node-bg: #fff4e8; --node-border: #e7b99c; --node-ink: #703510; --node-active: #ffe5cf; --node-accent: #a94a1a;
+.agent-canvas .finish {
+  --node-bg: #fff; --node-border: #d7afc7; --node-ink: #63304f; --node-active: #f4dfed; --node-accent: #963e74;
 }
 .agent-edges { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .agent-node::after {
@@ -179,12 +204,13 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   fill: none; stroke: var(--trace-color); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
   stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0;
 }
-.agent-token {
-  position: absolute; z-index: 2; inset: 0 auto auto 0; display: grid; place-items: center;
-  width: 29px; height: 29px; border: 2px solid #fff; border-radius: 50%; background: var(--teal);
-  color: #fff; font-size: 10px; font-weight: 700; box-shadow: 0 0 0 2px #fff, 0 3px 9px #19324755;
+.agent-packet {
+  position: absolute; z-index: 2; inset: 0 auto auto 0; width: 11px; height: 11px;
+  border: 2px solid #fff; border-radius: 50%; background: #2867ad; opacity: 0;
+  box-shadow: 0 0 0 2px currentColor, 0 0 9px currentColor; pointer-events: none;
 }
-.agent-canvas.is-playing .agent-trace { animation: agent-trace var(--agent-hop) var(--departure) ease-out both; }
+
+.agent-canvas.is-playing .agent-trace { animation: agent-trace var(--agent-hop) var(--departure) linear both; }
 .agent-canvas.is-playing .agent-node { animation: agent-visit .25s var(--arrival) ease-out both; }
 .agent-canvas.is-playing .agent-node::after { animation: agent-check .18s var(--arrival) ease-out both; }
 @keyframes agent-trace {
@@ -436,12 +462,25 @@ details.card[open] p { animation: pop .35s ease; }
   <h2 class="t">See an AI agent at work</h2>
   <p class="lead">The agent tracks production handoffs from CAD to shipping.</p>
   <div class="agent-canvas">
+    <div class="agent-run">
+      <div class="agent-run-copy">
+        <span class="agent-run-badge">AI run</span>
+        <div class="agent-run-status">
+          <span class="agent-caption design" style="--start:0;--span:4">Preparing designs and molds</span>
+          <span class="agent-caption casting" style="--start:4;--span:5">Coordinating wax and casting</span>
+          <span class="agent-caption finish" style="--start:9;--span:6">Tracking finishing and dispatch</span>
+          <span class="agent-caption is-final">15 production steps checked</span>
+        </div>
+      </div>
+      <div class="agent-run-progress" aria-hidden="true"><span></span></div>
+    </div>
+
     <div class="agent-graph">
       <svg class="agent-edges" aria-hidden="true">
         <defs><marker id="agent-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1l5 3-5 3" fill="none" stroke="#60788a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
         <g></g>
       </svg>
-      <span class="agent-token" aria-hidden="true" hidden>AI</span>
+      <span class="agent-packet" aria-hidden="true" hidden></span>
       <div class="agent-entry" data-entry="1" style="--col:1;--mobile-row:1"><strong>New SKU</strong><span>Start at step 1</span></div>
       <div class="agent-entry" data-entry="4" style="--col:3;--mobile-row:4"><strong>Master exists</strong><span>Start at step 4</span></div>
       <div class="agent-entry" data-entry="5" style="--col:4;--mobile-row:5"><strong>Rubber mold exists</strong><span>Reorder at step 5</span></div>
@@ -675,14 +714,16 @@ details.card[open] p { animation: pop .35s ease; }
 
   var agentCanvas = document.querySelector(".agent-canvas");
   var agentGraph = agentCanvas.querySelector(".agent-graph");
-  var agentToken = agentGraph.querySelector(".agent-token");
+  var agentPacket = agentGraph.querySelector(".agent-packet");
   var agentEdges = agentGraph.querySelector(".agent-edges g");
   var agentNodes = Array.from(agentGraph.querySelectorAll(".agent-node"));
   var agentEntries = Array.from(agentGraph.querySelectorAll(".agent-entry"));
   var agentTrip;
   var agentStops;
-  var agentMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var agentHandoffs = [];
   var agentHop = parseFloat(getComputedStyle(agentCanvas).getPropertyValue("--agent-hop"));
+  var agentDuration = agentNodes.length * agentHop;
+  agentCanvas.style.setProperty("--agent-duration", agentDuration + "ms");
   var agentColors = agentNodes.map(function (node, index) {
     node.style.setProperty("--arrival", (index + 1) * agentHop + "ms");
     return getComputedStyle(node).getPropertyValue("--node-accent").trim();
@@ -716,6 +757,7 @@ details.card[open] p { animation: pop .35s ease; }
       if (branch) route.setAttribute("data-branch", "");
       if (destination >= 0) {
         var trace = path("agent-trace");
+        agentHandoffs[destination] = trace;
         trace.setAttribute("pathLength", "1");
         trace.style.setProperty("--trace-color", agentColors[destination]);
         trace.style.setProperty("--departure", destination * agentHop + "ms");
@@ -744,13 +786,19 @@ details.card[open] p { animation: pop .35s ease; }
         edge([[from.x, from.bottom], [from.x, turn], [to.x, turn], [to.x, to.top - 3]], i === 0 ? 0 : -1, true);
       }
     });
-    agentStops = [entries[0]].concat(nodes).map(function (node, index) {
-      return {
-        transform: "translate(" + (node.right - 8) + "px," + (node.top + 6) + "px) translate(-50%, -50%)",
-        backgroundColor: index ? agentColors[index - 1] : "#0f6e7f",
-        easing: "cubic-bezier(.2, 0, .38, .9)"
-      };
+    agentStops = agentHandoffs.flatMap(function (trace, index) {
+      var distance = trace.getTotalLength();
+      return [0, 0.18, 0.82, 1].map(function (portion, frameIndex) {
+        var point = trace.getPointAtLength(distance * portion);
+        return {
+          offset: (index + portion) / agentHandoffs.length,
+          transform: "translate(" + point.x + "px," + point.y + "px) translate(-50%, -50%)",
+          color: agentColors[index], backgroundColor: agentColors[index],
+          opacity: frameIndex === 1 || frameIndex === 2 ? 1 : 0
+        };
+      });
     });
+
     if (agentTrip) {
       var elapsed = agentTrip.currentTime;
       agentTrip.effect.setKeyframes(agentStops);
@@ -761,9 +809,9 @@ details.card[open] p { animation: pop .35s ease; }
   function playAgentFlow() {
     if (agentTrip) return;
     agentCanvas.classList.add("is-playing");
-    agentToken.hidden = false;
-    agentTrip = agentToken.animate(agentStops, {
-      duration: agentNodes.length * agentHop, easing: agentMotion.matches ? "steps(" + agentNodes.length + ", end)" : "linear", fill: "both"
+    agentPacket.hidden = false;
+    agentTrip = agentPacket.animate(agentStops, {
+      duration: agentDuration, fill: "both"
     });
   }
 
@@ -777,7 +825,7 @@ details.card[open] p { animation: pop .35s ease; }
           agentTrip.cancel();
           agentTrip = null;
           agentCanvas.classList.remove("is-playing");
-          agentToken.hidden = true;
+          agentPacket.hidden = true;
         }
       });
     }, { root: frame, threshold: [0, 0.2] }).observe(agentCanvas);
