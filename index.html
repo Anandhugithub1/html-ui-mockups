@@ -139,17 +139,8 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .chiprow .lb { font-size: 12px; color: var(--faint); }
 
 /* agents */
-.agent-demo { margin-top: 20px; padding: 16px; }
-.agent-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
-.agent-picker label { font-weight: 600; }
-.agent-picker select {
-  appearance: none; min-height: 44px; max-width: 100%; padding: 8px 36px 8px 12px;
-  border: 1px solid var(--line2); border-radius: 8px; color: var(--ink); font: inherit;
-  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2344566a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 12px center / 16px no-repeat;
-}
-.agent-picker .btn { margin-inline-start: auto; }
 .agent-canvas {
-  position: relative; margin-top: 12px; padding: 14px 14px 14px 50px; border: 1px solid var(--line); border-radius: 10px;
+  position: relative; margin-top: 20px; padding: 14px 14px 14px 50px; border: 1px solid var(--line); border-radius: 10px;
   background: radial-gradient(circle, #cbd9e4 1px, transparent 1.2px) 0 0 / 14px 14px, #f4f8fa;
 }
 .agent-summary { display: grid; grid-auto-rows: 1fr; gap: 12px; margin: 0; }
@@ -170,6 +161,9 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-canvas.is-playing .agent-token { animation: agent-travel-down 3s linear both; }
 .agent-canvas.is-playing .agent-summary > div { animation: agent-arrive .23s var(--arrival, 0s) ease both; }
 .agent-canvas.is-playing .agent-summary :is(dt, dd, strong) { animation: agent-arrive-text .23s var(--arrival, 0s) ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .agent-canvas.is-playing .agent-token { animation-timing-function: step-end; }
+}
 @keyframes agent-travel-down {
   0%, 12% { top: 0; }
   40%, 54% { top: 50%; }
@@ -186,7 +180,6 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-summary strong { display: block; margin: 3px 0 2px; color: var(--ink); font-size: 16px; font-weight: 650; }
 .agent-summary dd { color: var(--body); font-size: 14px; line-height: 1.45; }
 @container (min-width: 720px) {
-  .agent-demo { padding: 18px; }
   .agent-canvas { padding: 46px 16px 16px; }
   .agent-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
   .agent-summary > div::before { right: auto; left: 50%; top: auto; bottom: 100%; width: 2px; height: 23px; }
@@ -415,27 +408,13 @@ details.card[open] p { animation: pop .35s ease; }
 
 <section class="sec" id="agents"><div class="wrap">
   <h2 class="t">See an AI agent at work</h2>
-  <div class="card agent-demo">
-    <div class="agent-picker">
-      <label for="agent-example">Example</label>
-      <select id="agent-example">
-        <option value="follow">Coordinate departments</option>
-        <option value="order">Place and track orders</option>
-        <option value="third">Manage outside workshops</option>
-        <option value="stock">Track inventory</option>
-        <option value="entry">Enter production data</option>
-        <option value="inv">Prepare invoices</option>
-      </select>
-      <button class="btn" id="agent-replay" type="button">Play animation</button>
-    </div>
-    <div class="agent-canvas">
-      <div class="agent-rail" aria-hidden="true"><span class="agent-token">AI</span></div>
-      <dl class="agent-summary" aria-live="polite" aria-atomic="true">
-        <div><dt>Trigger</dt><dd><strong></strong><span></span></dd></div>
-        <div><dt>Agent action</dt><dd><strong></strong><span></span></dd></div>
-        <div><dt>Outcome</dt><dd><strong></strong><span></span></dd></div>
-      </dl>
-    </div>
+  <div class="agent-canvas">
+    <div class="agent-rail" aria-hidden="true"><span class="agent-token">AI</span></div>
+    <dl class="agent-summary">
+      <div><dt>Trigger</dt><dd><strong>Casting runs late</strong>The department reports a six-hour delay.</dd></div>
+      <div><dt>Agent action</dt><dd><strong>Adjusts the schedule</strong>The agent rebooks finishing and alerts the teams downstream.</dd></div>
+      <div><dt>Outcome</dt><dd><strong>Teams get the new date</strong>Quality check, packing and shipping see the same plan.</dd></div>
+    </dl>
   </div>
 </div></section>
 <section class="sec alt" id="stock"><div class="wrap feat">
@@ -641,69 +620,17 @@ details.card[open] p { animation: pop .35s ease; }
   pp.addEventListener("click", function () { paused = !paused; label(); if (paused) clearTimeout(loopT); else run(); });
   restart(); label(); run();
 
-  /* Agent examples */
-  var examples = {
-    follow: [
-      ["Casting runs late", "The department reports a six-hour delay."],
-      ["Adjusts the schedule", "The agent rebooks finishing and alerts the teams downstream."],
-      ["Teams get the new date", "Quality check, packing and shipping see the same plan."]
-    ],
-    order: [
-      ["A customer messages on LINE", "They ask for 20 rings."],
-      ["Creates the order", "The agent checks stock and orders the missing gold."],
-      ["Customer gets a date", "The agent confirms timing with the supplier and replies on LINE."]
-    ],
-    third: [
-      ["A workshop returns a batch", "The setter scans in 40 pieces and the leftover scrap."],
-      ["Checks the return weight", "The agent compares what came back with what went out."],
-      ["You review the shortfall", "The agent flags 0.9 g before it raises the setter’s invoice."]
-    ],
-    stock: [
-      ["A worker scans a tray", "Twelve diamonds move from the vault to a bench."],
-      ["Updates stock", "The agent records the transfer and drafts a request when platinum runs low."],
-      ["You approve the purchase", "The inventory reflects the transfer as soon as it’s scanned."]
-    ],
-    entry: [
-      ["A worker sends a photo", "The job card comes in through LINE."],
-      ["Reads the job card", "The agent extracts the item code, weights and labor hours."],
-      ["Production records update", "The agent posts the entry after the worker confirms the figures."]
-    ],
-    inv: [
-      ["A supplier emails a bill", "The invoice arrives as a PDF."],
-      ["Matches the paperwork", "The agent checks the bill against the purchase order."],
-      ["You approve the bill", "The agent posts the bill after approval."]
-    ]
-  };
-  var agentExample = $("agent-example");
   var agentCanvas = document.querySelector(".agent-canvas");
-  var summaryFields = agentCanvas.querySelectorAll(".agent-summary dd");
-  function showAgentExample() {
-    examples[agentExample.value].forEach(function (step, index) {
-      summaryFields[index].firstElementChild.textContent = step[0];
-      summaryFields[index].lastElementChild.textContent = step[1];
-    });
-  }
-  function playAgentFlow() {
-    agentFlowObserver?.disconnect();
-    agentCanvas.classList.remove("is-playing");
-    void agentCanvas.offsetWidth;
+  if (window.IntersectionObserver) {
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.intersectionRatio >= 0.45) agentCanvas.classList.add("is-playing");
+        else if (!entry.isIntersecting) agentCanvas.classList.remove("is-playing");
+      });
+    }, { root: frame, threshold: [0, 0.45] }).observe(agentCanvas);
+  } else {
     agentCanvas.classList.add("is-playing");
   }
-  var motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
-  var agentFlowObserver;
-  if (window.IntersectionObserver) {
-    agentFlowObserver = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting && !motionPreference.matches) playAgentFlow();
-    }, { root: frame, threshold: 0.35 });
-    agentFlowObserver.observe(agentCanvas);
-  }
-  agentExample.addEventListener("change", function () {
-    showAgentExample();
-    if (motionPreference.matches) agentCanvas.classList.remove("is-playing");
-    else playAgentFlow();
-  });
-  $("agent-replay").addEventListener("click", playAgentFlow);
-  showAgentExample();
   /* stock: metal loss by worker, department, date or item code. Loss % is computed; the limit is per metal. */
   var limits = { Gold: 1.0, Platinum: 0.8, Silver: 1.5, Other: 2.0 };
   var rows = [
