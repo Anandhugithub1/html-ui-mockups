@@ -139,7 +139,8 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .chiprow .lb { font-size: 12px; color: var(--faint); }
 
 /* agents */
-.agent-demo { margin-top: 22px; }
+.agent-demo { margin-top: 22px; --agent-phase-gap: 1450ms; --agent-ease: cubic-bezier(.35, 0, .24, 1); }
+.agent-spoke, .agent-node, .agent-activity li { --phase-start: calc(var(--phase) * var(--agent-phase-gap)); }
 .agent-demo .agent-demo-head { justify-content: flex-start; padding: 13px 16px; }
 .agent-demo-head h3 { font-size: 14px; font-weight: 700; }
 .agent-activity { margin: 0; padding: 0; list-style: none; }
@@ -150,12 +151,12 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 }
 .agent-activity .is-agent { background: var(--teal-bg); color: var(--teal-d); }
 .agent-activity p { font-size: 14px; line-height: 1.45; }
-.agent-demo.is-playing .agent-activity li { animation: agent-log-update .52s calc(var(--start) + 380ms) ease both; }
-@keyframes agent-log-update { 35%, 68% { background: #eef7f9; } }
+.agent-demo.is-playing .agent-activity li { animation: agent-log-update 1.16s calc(var(--phase-start) + 250ms) var(--agent-ease) both; }
+@keyframes agent-log-update { 24%, 73% { background: #eef7f9; } }
 .agent-result { padding: 10px 16px; color: #164f37; background: #eef8f2; font-size: 14px; font-weight: 650; }
 .agent-result span { margin-right: 4px; }
-.agent-demo.is-playing .agent-result { animation: agent-order-done .3s 3.4s ease-out both; }
-@keyframes agent-order-done { to { background: #dff2e8; } }
+.agent-demo.is-playing .agent-result { animation: agent-production-done .38s calc(4 * var(--agent-phase-gap)) var(--agent-ease) both; }
+@keyframes agent-production-done { to { background: #dff2e8; } }
 .agent-canvas {
   padding: 16px 14px; border-bottom: 3px solid #0f6e7f;
   background: radial-gradient(circle, #ccdce8 1px, transparent 1.4px) 0 0 / 16px 16px, #f3f8fb;
@@ -173,19 +174,19 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-hub::after { inset: -6px; border: 2px solid #56a6af; opacity: 0; }
 .agent-spoke path { fill: none; stroke: #9eb6c5; stroke-width: 1.6; stroke-dasharray: 4 6; stroke-linecap: round; }
 .agent-spoke .agent-spoke-signal { stroke: #168171; stroke-width: 2.4; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
-.agent-demo.is-playing .agent-spoke-signal { animation: agent-production-link .6s var(--start) ease-in-out both; }
-.agent-demo.is-playing .agent-hub::after { animation: agent-production-pulse .94s ease-out 4; }
-.agent-demo.is-playing .agent-node { animation: agent-production-check .28s var(--start) ease-out both; }
+.agent-demo.is-playing .agent-spoke-signal { animation: agent-production-link .92s var(--phase-start) var(--agent-ease) both; }
+.agent-demo.is-playing .agent-hub::after { animation: agent-production-pulse var(--agent-phase-gap) var(--agent-ease) 4; }
+.agent-demo.is-playing .agent-node { animation: agent-production-check .41s calc(var(--phase-start) + 720ms + var(--step-offset)) var(--agent-ease) both; }
 .agent-node::after {
   content: ""; position: absolute; top: -6px; right: -5px; width: 17px; height: 17px; border-radius: 50%;
   background: #177848 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 8 2.5 2.5L12 5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 13px no-repeat;
   opacity: 0;
 }
-.agent-demo.is-playing .agent-node::after { animation: agent-production-badge .22s calc(var(--start) + 120ms) ease-out both; }
+.agent-demo.is-playing .agent-node::after { animation: agent-production-badge .28s calc(var(--phase-start) + 870ms + var(--step-offset)) var(--agent-ease) both; }
 @keyframes agent-production-link { from { opacity: .8; } to { stroke-dashoffset: 0; opacity: .62; } }
 @keyframes agent-production-pulse {
   from { opacity: .6; transform: scale(.97); }
-  to { opacity: 0; transform: scale(1.32); }
+  68%, 100% { opacity: 0; transform: scale(1.32); }
 }
 @keyframes agent-production-check { to { border-color: #218854; } }
 @keyframes agent-production-badge { to { opacity: 1; } }
@@ -511,10 +512,10 @@ details.card[open] p { animation: pop .35s ease; }
     </ul>
     </div>
     <ol class="agent-activity" role="list" aria-label="Production activity">
-      <li style="--start:0ms"><span class="is-agent">Agent</span><p>Checks the SKU and routes design, printing, and mold preparation.</p></li>
-      <li style="--start:940ms"><span>Casting</span><p>Receives the work order for wax preparation, casting, and tree cutting.</p></li>
-      <li style="--start:1880ms"><span class="is-agent">Agent</span><p>Coordinates finishing, stone setting, plating, and quality control.</p></li>
-      <li style="--start:2820ms"><span>Dispatch</span><p>Packs and tags the finished pieces for shipping.</p></li>
+      <li style="--phase:0"><span class="is-agent">Agent</span><p>Checks the SKU and routes design, printing, and mold preparation.</p></li>
+      <li style="--phase:1"><span>Casting</span><p>Receives the work order for wax preparation, casting, and tree cutting.</p></li>
+      <li style="--phase:2"><span class="is-agent">Agent</span><p>Coordinates finishing, stone setting, plating, and quality control.</p></li>
+      <li style="--phase:3"><span>Dispatch</span><p>Packs and tags the finished pieces for shipping.</p></li>
     </ol>
     <p class="agent-result"><span aria-hidden="true">✓</span> Production handoffs coordinated from CAD to shipping.</p>
   </div>
@@ -732,7 +733,8 @@ details.card[open] p { animation: pop .35s ease; }
   var productionStarts = [0, 4, 9, 13];
   agentNodes.forEach(function (node, index) {
     var phase = index < 4 ? 0 : index < 9 ? 1 : index < 13 ? 2 : 3;
-    node.style.setProperty("--start", (phase * 940 + 410 + (index - productionStarts[phase]) * 55) + "ms");
+    node.style.setProperty("--phase", phase);
+    node.style.setProperty("--step-offset", (index - productionStarts[phase]) * 65 + "ms");
   });
 
   function drawAgentFlow() {
@@ -824,7 +826,7 @@ details.card[open] p { animation: pop .35s ease; }
           " V" + (endY - 10) + " Q" + lane + " " + endY + " " + (lane + 10) + " " + endY + " H" + (target.left - 3);
       }
       spoke.querySelectorAll("path").forEach(function (path) { path.setAttribute("d", d); });
-      spoke.style.setProperty("--start", index * 940 + "ms");
+      spoke.style.setProperty("--phase", index);
     });
   }
 
