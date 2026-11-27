@@ -154,17 +154,27 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-caption:first-child { visibility: visible; }
 .agent-canvas.is-playing .agent-caption {
   visibility: hidden;
-  animation: agent-caption calc(var(--span) * var(--agent-hop)) calc(var(--start) * var(--agent-hop)) step-end;
+  animation: agent-caption calc(var(--span) * var(--agent-hop)) calc(var(--start) * var(--agent-hop)) ease-out;
 }
-.agent-canvas.is-playing .agent-caption.is-final { animation: agent-run-done 0s var(--agent-duration) both; }
+.agent-canvas.is-playing .agent-caption.is-final { animation: agent-run-done .18s var(--agent-duration) ease-out both; }
 .agent-run-progress { height: 3px; overflow: hidden; border-radius: 3px; background: #c9d9e7; }
 .agent-run-progress span { display: block; height: 100%; background: #285a86; transform: scaleX(0); transform-origin: left; }
 .agent-canvas.is-playing .agent-run-progress span { animation: agent-progress var(--agent-duration) linear both; }
-@keyframes agent-caption { from { visibility: visible; } to { visibility: hidden; } }
-@keyframes agent-run-done { from { visibility: hidden; } to { visibility: visible; } }
+@keyframes agent-caption {
+  0% { visibility: visible; opacity: 0; transform: translateY(4px); }
+  11%, 91% { opacity: 1; transform: translateY(0); }
+  100% { visibility: hidden; opacity: 0; }
+}
+@keyframes agent-run-done {
+  from { visibility: hidden; opacity: 0; }
+  to { visibility: visible; opacity: 1; }
+}
+@keyframes agent-caption-still { from { visibility: visible; } to { visibility: hidden; } }
+
 @keyframes agent-progress { to { transform: scaleX(1); } }
 @media (prefers-reduced-motion: reduce) {
-  .agent-canvas .agent-packet { visibility: hidden; }
+  .agent-canvas .agent-marker { visibility: hidden; }
+  .agent-canvas.is-playing .agent-caption:not(.is-final) { animation-name: agent-caption-still; animation-timing-function: step-end; }
   .agent-canvas.is-playing .agent-run-progress span { animation-timing-function: steps(15, end); }
 }
 
@@ -204,23 +214,28 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   fill: none; stroke: var(--trace-color); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
   stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0;
 }
-.agent-packet {
-  position: absolute; z-index: 2; inset: 0 auto auto 0; width: 11px; height: 11px;
-  border: 2px solid #fff; border-radius: 50%; background: #2867ad; opacity: 0;
-  box-shadow: 0 0 0 2px currentColor, 0 0 9px currentColor; pointer-events: none;
+.agent-marker {
+  position: absolute; z-index: 2; inset: 0 auto auto 0; display: grid; place-items: center;
+  width: 29px; height: 20px; border: 2px solid #fff; border-radius: 999px; background: #123450;
+  color: #fff; font-size: 10px; font-weight: 700; line-height: 1;
+  box-shadow: 0 2px 8px #12345050; pointer-events: none;
 }
-
 .agent-canvas.is-playing .agent-trace { animation: agent-trace var(--agent-hop) var(--departure) linear both; }
 .agent-canvas.is-playing .agent-node { animation: agent-visit .25s var(--arrival) ease-out both; }
-.agent-canvas.is-playing .agent-node::after { animation: agent-check .18s var(--arrival) ease-out both; }
+.agent-canvas.is-playing .agent-node::after { animation: agent-check .14s calc(var(--arrival) + 85ms) ease-out both; }
 @keyframes agent-trace {
   from { opacity: 1; stroke-dashoffset: 1; }
-  to { opacity: 1; stroke-dashoffset: 0; }
+  68% { opacity: 1; stroke-dashoffset: 0; stroke-width: 4; }
+  to { opacity: 1; stroke-dashoffset: 0; stroke-width: 2.5; }
 }
 @keyframes agent-visit {
-  55% { background: var(--node-active); border-color: var(--node-accent); box-shadow: 0 0 0 2px var(--node-border); }
+  36%, 62% {
+    background: var(--node-active); border-color: var(--node-accent);
+    box-shadow: 0 0 0 2px var(--node-accent), 0 0 0 5px var(--node-border);
+  }
   to { background: var(--node-active); border-color: var(--node-accent); }
 }
+
 @keyframes agent-check { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .agent-canvas.is-playing :is(.agent-trace, .agent-node),
@@ -480,7 +495,7 @@ details.card[open] p { animation: pop .35s ease; }
         <defs><marker id="agent-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1l5 3-5 3" fill="none" stroke="#60788a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
         <g></g>
       </svg>
-      <span class="agent-packet" aria-hidden="true" hidden></span>
+      <span class="agent-marker" aria-hidden="true" hidden>AI</span>
       <div class="agent-entry" data-entry="1" style="--col:1;--mobile-row:1"><strong>New SKU</strong><span>Start at step 1</span></div>
       <div class="agent-entry" data-entry="4" style="--col:3;--mobile-row:4"><strong>Master exists</strong><span>Start at step 4</span></div>
       <div class="agent-entry" data-entry="5" style="--col:4;--mobile-row:5"><strong>Rubber mold exists</strong><span>Reorder at step 5</span></div>
@@ -714,18 +729,18 @@ details.card[open] p { animation: pop .35s ease; }
 
   var agentCanvas = document.querySelector(".agent-canvas");
   var agentGraph = agentCanvas.querySelector(".agent-graph");
-  var agentPacket = agentGraph.querySelector(".agent-packet");
+  var agentMarker = agentGraph.querySelector(".agent-marker");
   var agentEdges = agentGraph.querySelector(".agent-edges g");
   var agentNodes = Array.from(agentGraph.querySelectorAll(".agent-node"));
   var agentEntries = Array.from(agentGraph.querySelectorAll(".agent-entry"));
   var agentTrip;
   var agentStops;
-  var agentHandoffs = [];
   var agentHop = parseFloat(getComputedStyle(agentCanvas).getPropertyValue("--agent-hop"));
   var agentDuration = agentNodes.length * agentHop;
+  var agentArrival = .68;
   agentCanvas.style.setProperty("--agent-duration", agentDuration + "ms");
   var agentColors = agentNodes.map(function (node, index) {
-    node.style.setProperty("--arrival", (index + 1) * agentHop + "ms");
+    node.style.setProperty("--arrival", Math.round((index + agentArrival) * agentHop) + "ms");
     return getComputedStyle(node).getPropertyValue("--node-accent").trim();
   });
 
@@ -757,7 +772,6 @@ details.card[open] p { animation: pop .35s ease; }
       if (branch) route.setAttribute("data-branch", "");
       if (destination >= 0) {
         var trace = path("agent-trace");
-        agentHandoffs[destination] = trace;
         trace.setAttribute("pathLength", "1");
         trace.style.setProperty("--trace-color", agentColors[destination]);
         trace.style.setProperty("--departure", destination * agentHop + "ms");
@@ -786,19 +800,33 @@ details.card[open] p { animation: pop .35s ease; }
         edge([[from.x, from.bottom], [from.x, turn], [to.x, turn], [to.x, to.top - 3]], i === 0 ? 0 : -1, true);
       }
     });
-    agentStops = agentHandoffs.flatMap(function (trace, index) {
-      var distance = trace.getTotalLength();
-      return [0, 0.18, 0.82, 1].map(function (portion, frameIndex) {
-        var point = trace.getPointAtLength(distance * portion);
-        return {
-          offset: (index + portion) / agentHandoffs.length,
-          transform: "translate(" + point.x + "px," + point.y + "px) translate(-50%, -50%)",
-          color: agentColors[index], backgroundColor: agentColors[index],
-          opacity: frameIndex === 1 || frameIndex === 2 ? 1 : 0
-        };
-      });
+    function markerPosition(node) {
+      return desktop ? [node.x, node.top - 4] : [node.left - 5, node.top + 12];
+    }
+    function markerFrame(point, time, color) {
+      return {
+        offset: time / agentNodes.length,
+        transform: "translate(" + point[0] + "px," + point[1] + "px) translate(-50%, -50%)",
+        backgroundColor: color,
+        easing: "cubic-bezier(.22, .7, .25, 1)"
+      };
+    }
+    var previous = entries[0];
+    var start = desktop ? markerPosition(previous) : [previous.x, previous.top + 8];
+    agentStops = [markerFrame(start, 0, "#123450")];
+    nodes.forEach(function (node, index) {
+      var end = markerPosition(node);
+      var color = agentColors[index];
+      if (desktop && previous.top !== node.top) {
+        var gutter = node.x < bounds.width / 2 ? node.left - 6 : node.right + 6;
+        agentStops.push(markerFrame([gutter, start[1]], index + .18, color));
+        agentStops.push(markerFrame([gutter, end[1]], index + .49, color));
+      }
+      agentStops.push(markerFrame(end, index + agentArrival, color));
+      agentStops.push(markerFrame(end, index + 1, color));
+      previous = node;
+      start = end;
     });
-
     if (agentTrip) {
       var elapsed = agentTrip.currentTime;
       agentTrip.effect.setKeyframes(agentStops);
@@ -809,8 +837,8 @@ details.card[open] p { animation: pop .35s ease; }
   function playAgentFlow() {
     if (agentTrip) return;
     agentCanvas.classList.add("is-playing");
-    agentPacket.hidden = false;
-    agentTrip = agentPacket.animate(agentStops, {
+    agentMarker.hidden = false;
+    agentTrip = agentMarker.animate(agentStops, {
       duration: agentDuration, fill: "both"
     });
   }
@@ -825,7 +853,7 @@ details.card[open] p { animation: pop .35s ease; }
           agentTrip.cancel();
           agentTrip = null;
           agentCanvas.classList.remove("is-playing");
-          agentPacket.hidden = true;
+          agentMarker.hidden = true;
         }
       });
     }, { root: frame, threshold: [0, 0.2] }).observe(agentCanvas);
