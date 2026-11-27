@@ -140,7 +140,7 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 
 /* agents */
 .agent-demo { margin-top: 22px; --agent-phase-gap: 1450ms; --agent-link-time: 1020ms; --agent-ease: cubic-bezier(.35, 0, .24, 1); }
-.agent-spoke, .agent-node, .agent-activity > li { --phase-start: calc(var(--phase) * var(--agent-phase-gap)); }
+.agent-spoke, .agent-connection, .agent-activity > li { --phase-start: calc(var(--phase) * var(--agent-phase-gap)); }
 .agent-demo .agent-demo-head { justify-content: flex-start; padding: 13px 16px; }
 .agent-demo-head h3 { font-size: 14px; font-weight: 700; }
 .agent-activity { margin: 0; padding: 0; list-style: none; }
@@ -217,6 +217,24 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   opacity: 0;
 }
 .agent-demo.is-playing .agent-node::after { animation: agent-production-badge .36s calc(var(--phase-start) + var(--agent-link-time)) ease-out both; }
+.agent-connection { display: contents; }
+.agent-link-dot {
+  position: absolute; z-index: 1; left: 50%; top: 63%; width: 10px; height: 10px;
+  transform: translate(-50%, -50%); border: 1px solid #fff; border-radius: 50%;
+  background: #168171; box-shadow: 0 0 0 2px #d6eeea; opacity: 0; pointer-events: none;
+}
+.agent-demo.is-playing .agent-link-dot {
+  animation: agent-link-dot-travel var(--agent-link-time) var(--phase-start) ease-in-out both;
+}
+@keyframes agent-link-dot-travel {
+  20% { opacity: 1; }
+  to {
+    left: calc(50% + (var(--x) - 50%) * .54);
+    top: calc(63% + (var(--y) - 63%) * .54);
+    opacity: 1;
+  }
+}
+
 @keyframes agent-production-link {
   from { stroke-dashoffset: 1; opacity: 0; }
   20%, 76% { opacity: .82; }
@@ -233,7 +251,7 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   .agent-demo.is-playing .agent-hub::after { animation: none; }
   .agent-demo.is-playing .agent-orbit { animation-timing-function: steps(8, end); }
   .agent-demo.is-playing .agent-activity > li[style] { animation: none; }
-  .agent-demo.is-playing :is(.agent-spoke-signal, .agent-node, .agent-result),
+  .agent-demo.is-playing :is(.agent-spoke-signal, .agent-link-dot, .agent-node, .agent-result),
   .agent-demo.is-playing .agent-node::after { animation-timing-function: step-end; }
 }
 .agent-node, .agent-hub { position: absolute; transform: translate(-50%, -50%); }
@@ -475,10 +493,22 @@ details.card[open] p { animation: pop .35s ease; }
         <g class="agent-spoke" style="--phase:2"><path d="M500 163.8H160" vector-effect="non-scaling-stroke"/><path class="agent-spoke-signal" d="M500 163.8H160" pathLength="1" vector-effect="non-scaling-stroke"/></g>
         <g class="agent-spoke" style="--phase:3"><path d="M500 163.8H840" vector-effect="non-scaling-stroke"/><path class="agent-spoke-signal" d="M500 163.8H840" pathLength="1" vector-effect="non-scaling-stroke"/></g>
       </svg>
-      <div class="agent-node" style="--x:29%;--y:24%;--phase:0">Design &amp; tooling</div>
-      <div class="agent-node" style="--x:71%;--y:24%;--phase:1">Wax &amp; casting</div>
-      <div class="agent-node side" style="--x:16%;--y:63%;--phase:2">Finishing &amp; QC</div>
-      <div class="agent-node side" style="--x:84%;--y:63%;--phase:3">Packing &amp; shipping</div>
+      <div class="agent-connection" style="--x:29%;--y:24%;--phase:0">
+        <span class="agent-link-dot" aria-hidden="true"></span>
+        <div class="agent-node">Design &amp; tooling</div>
+      </div>
+      <div class="agent-connection" style="--x:71%;--y:24%;--phase:1">
+        <span class="agent-link-dot" aria-hidden="true"></span>
+        <div class="agent-node">Wax &amp; casting</div>
+      </div>
+      <div class="agent-connection" style="--x:16%;--y:63%;--phase:2">
+        <span class="agent-link-dot" aria-hidden="true"></span>
+        <div class="agent-node side">Finishing &amp; QC</div>
+      </div>
+      <div class="agent-connection" style="--x:84%;--y:63%;--phase:3">
+        <span class="agent-link-dot" aria-hidden="true"></span>
+        <div class="agent-node side">Packing &amp; shipping</div>
+      </div>
       <div class="agent-hub">Agent<span class="agent-orbit" aria-hidden="true"></span></div>
     </div>
     <ul class="agent-activity" role="list" aria-label="Production activity and starting routes">
