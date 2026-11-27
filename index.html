@@ -160,7 +160,6 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 }
 .agent-canvas.is-playing .agent-token { animation: agent-travel-down 3s linear both; }
 .agent-canvas.is-playing .agent-summary > div { animation: agent-arrive .23s var(--arrival, 0s) ease both; }
-.agent-canvas.is-playing .agent-summary :is(dt, dd, strong) { animation: agent-arrive-text .23s var(--arrival, 0s) ease both; }
 @media (prefers-reduced-motion: reduce) {
   .agent-canvas.is-playing .agent-token { animation-timing-function: step-end; }
 }
@@ -174,11 +173,20 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   40%, 54% { left: 50%; }
   82%, 100% { left: 100%; }
 }
-@keyframes agent-arrive { to { background: var(--ink); border-color: var(--ink); } }
-@keyframes agent-arrive-text { to { color: #fff; } }
-.agent-summary dt { color: var(--teal-d); font-size: 13px; font-weight: 650; }
-.agent-summary strong { display: block; margin: 3px 0 2px; color: var(--ink); font-size: 16px; font-weight: 650; }
-.agent-summary dd { color: var(--body); font-size: 14px; line-height: 1.45; }
+@keyframes agent-arrive { to { background: #edf8fa; border-color: var(--teal); } }
+@keyframes agent-check-in { to { background: var(--ink); border-color: var(--ink); color: #fff; } }
+.agent-summary h3 { margin-bottom: 8px; font-size: 16px; font-weight: 700; }
+.agent-departments { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: stretch; gap: 5px; list-style: none; margin: 0; padding: 0; }
+.agent-departments li {
+  display: flex; align-items: center; min-width: 0; padding: 5px 7px; border: 1px solid var(--line);
+  border-radius: 5px; background: var(--bg); color: var(--body); font-size: 13px; line-height: 1.3;
+}
+.agent-departments li:nth-child(2) { --check-in: .11s; }
+.agent-departments li:nth-child(3) { --check-in: .22s; }
+.agent-departments li:nth-child(4) { --check-in: .33s; }
+.agent-departments li:nth-child(5) { --check-in: .44s; }
+.agent-departments li:nth-child(6) { --check-in: .55s; }
+.agent-canvas.is-playing .agent-departments li { animation: agent-check-in .18s calc(var(--arrival, 0s) + var(--check-in, 0s)) ease both; }
 @container (min-width: 720px) {
   .agent-canvas { padding: 46px 16px 16px; }
   .agent-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 22px; }
@@ -408,13 +416,41 @@ details.card[open] p { animation: pop .35s ease; }
 
 <section class="sec" id="agents"><div class="wrap">
   <h2 class="t">See an AI agent at work</h2>
+  <p class="lead">The agent tracks production handoffs from CAD to shipping.</p>
   <div class="agent-canvas">
     <div class="agent-rail" aria-hidden="true"><span class="agent-token">AI</span></div>
-    <dl class="agent-summary">
-      <div><dt>Trigger</dt><dd><strong>Casting runs late</strong>The department reports a six-hour delay.</dd></div>
-      <div><dt>Agent action</dt><dd><strong>Adjusts the schedule</strong>The agent rebooks finishing and alerts the teams downstream.</dd></div>
-      <div><dt>Outcome</dt><dd><strong>Teams get the new date</strong>Quality check, packing and shipping see the same plan.</dd></div>
-    </dl>
+    <div class="agent-summary">
+      <div>
+        <h3>Design &amp; tooling</h3>
+        <ol class="agent-departments" role="list">
+          <li>CAD</li>
+          <li>3D printing</li>
+          <li>Master model</li>
+          <li>Rubber mold</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Wax &amp; casting</h3>
+        <ol class="agent-departments" role="list">
+          <li>Wax injection</li>
+          <li>Wax setting</li>
+          <li>Wax tree</li>
+          <li>Casting</li>
+          <li>Tree cutting</li>
+        </ol>
+      </div>
+      <div>
+        <h3>Finishing &amp; dispatch</h3>
+        <ol class="agent-departments" role="list">
+          <li>Finishing</li>
+          <li>Stone setting</li>
+          <li>Plating</li>
+          <li>Quality control</li>
+          <li>Packing &amp; tagging</li>
+          <li>Shipping</li>
+        </ol>
+      </div>
+    </div>
   </div>
 </div></section>
 <section class="sec alt" id="stock"><div class="wrap feat">
