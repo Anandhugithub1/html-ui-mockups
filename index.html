@@ -140,8 +140,8 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 
 /* agents */
 .agent-canvas {
-  margin-top: 20px; padding: 14px; border: 1px solid var(--line); border-radius: 12px;
-  background: radial-gradient(circle, #ccdbe6 1px, transparent 1.2px) 0 0 / 16px 16px, #f4f8fa;
+  margin-top: 20px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; --agent-hop: 300ms;
+  background: radial-gradient(circle, #d7e2eb 1px, transparent 1.2px) 0 0 / 16px 16px, #f7fafc;
 }
 .agent-graph {
   display: grid; position: relative; grid-template-columns: minmax(0, .83fr) minmax(0, 1.55fr);
@@ -153,38 +153,60 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   grid-row: var(--mobile-row); padding: 8px; border: 1px solid var(--node-border); border-radius: 8px;
   color: var(--node-ink); background: var(--node-bg); text-align: center; line-height: 1.2;
 }
-.agent-node { grid-column: 2; }
+.agent-node { grid-column: 2; border-inline-start: 3px solid var(--node-accent); }
 .agent-entry {
-  grid-column: 1; --node-bg: #fff; --node-border: #aebfcd; --node-ink: var(--ink);
+  grid-column: 1; --node-bg: #f0f5f9; --node-border: #a5b8c7; --node-ink: var(--ink);
 }
 .agent-node strong, .agent-entry strong { font-size: 14px; font-weight: 700; }
 .agent-node span, .agent-entry span { margin-top: 3px; font-size: 12px; }
 .agent-node.design, .agent-legend .design {
-  --node-bg: #eeebfb; --node-border: #b4a8e6; --node-ink: #362a72; --node-active: #d9d0fb;
+  --node-bg: #f4efff; --node-border: #c9b9ef; --node-ink: #3c2476; --node-active: #e9dfff; --node-accent: #6948ad;
 }
 .agent-node.casting, .agent-legend .casting {
-  --node-bg: #e2f4ef; --node-border: #8bc6b7; --node-ink: #154e42; --node-active: #bee8db;
+  --node-bg: #eaf8f3; --node-border: #9acfc0; --node-ink: #0e4b40; --node-active: #d3f1e7; --node-accent: #087763;
 }
 .agent-node.finish, .agent-legend .finish {
-  --node-bg: #fbeddf; --node-border: #dda789; --node-ink: #713a1f; --node-active: #f7d4b9;
+  --node-bg: #fff4e8; --node-border: #e7b99c; --node-ink: #703510; --node-active: #ffe5cf; --node-accent: #a94a1a;
 }
 .agent-edges { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.agent-edges g path { fill: none; stroke: #60788a; stroke-width: 1.5; stroke-linejoin: round; marker-end: url(#agent-arrow); }
-.agent-edges g path[data-branch] { stroke-dasharray: 4 3; }
+.agent-node::after {
+  content: ""; position: absolute; top: 8px; right: 8px; width: 8px; height: 4px;
+  border: solid var(--node-accent); border-width: 0 0 2px 2px; transform: rotate(-45deg); opacity: 0;
+}
+.agent-edges .agent-route { fill: none; stroke: #60788a; stroke-width: 1.5; stroke-linejoin: round; marker-end: url(#agent-arrow); }
+.agent-edges .agent-route[data-branch] { stroke-dasharray: 4 3; }
+.agent-edges .agent-trace {
+  fill: none; stroke: var(--trace-color); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0;
+}
 .agent-token {
   position: absolute; z-index: 2; inset: 0 auto auto 0; display: grid; place-items: center;
-  width: 27px; height: 27px; border: 2px solid #fff; border-radius: 50%; background: var(--teal);
-  color: #fff; font-size: 10px; font-weight: 700; box-shadow: 0 0 0 2px var(--teal-line);
+  width: 29px; height: 29px; border: 2px solid #fff; border-radius: 50%; background: var(--teal);
+  color: #fff; font-size: 10px; font-weight: 700; box-shadow: 0 0 0 2px #fff, 0 3px 9px #19324755;
 }
-.agent-canvas.is-playing .agent-node { animation: agent-visit .22s var(--arrival) ease both; }
-@keyframes agent-visit { to { background: var(--node-active); border-color: var(--node-ink); } }
+.agent-canvas.is-playing .agent-trace { animation: agent-trace var(--agent-hop) var(--departure) ease-out both; }
+.agent-canvas.is-playing .agent-node { animation: agent-visit .25s var(--arrival) ease-out both; }
+.agent-canvas.is-playing .agent-node::after { animation: agent-check .18s var(--arrival) ease-out both; }
+@keyframes agent-trace {
+  from { opacity: 1; stroke-dashoffset: 1; }
+  to { opacity: 1; stroke-dashoffset: 0; }
+}
+@keyframes agent-visit {
+  55% { background: var(--node-active); border-color: var(--node-accent); box-shadow: 0 0 0 2px var(--node-border); }
+  to { background: var(--node-active); border-color: var(--node-accent); }
+}
+@keyframes agent-check { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .agent-canvas.is-playing :is(.agent-trace, .agent-node),
+  .agent-canvas.is-playing .agent-node::after { animation-timing-function: step-end; }
+}
 .agent-legend {
   display: flex; flex-wrap: wrap; gap: 7px 18px; margin: 14px 2px 0; padding: 0;
   color: var(--body); font-size: 13px; list-style: none;
 }
 .agent-legend li { display: flex; align-items: center; gap: 6px; }
 .agent-legend li::before {
-  content: ""; width: 10px; height: 10px; border: 1px solid var(--node-border); border-radius: 2px; background: var(--node-active);
+  content: ""; width: 10px; height: 10px; border-radius: 2px; background: var(--node-accent);
 }
 @container (min-width: 720px) {
   .agent-canvas { padding: 16px 20px; }
@@ -424,21 +446,21 @@ details.card[open] p { animation: pop .35s ease; }
       <div class="agent-entry" data-entry="4" style="--col:3;--mobile-row:4"><strong>Master exists</strong><span>Start at step 4</span></div>
       <div class="agent-entry" data-entry="5" style="--col:4;--mobile-row:5"><strong>Rubber mold exists</strong><span>Reorder at step 5</span></div>
       <ol class="agent-steps" role="list" aria-label="Production steps">
-        <li class="agent-node design" style="--col:1;--row:2;--mobile-row:1;--arrival:265ms"><strong>1. CAD</strong><span>3D design</span></li>
-        <li class="agent-node design" style="--col:2;--row:2;--mobile-row:2;--arrival:530ms"><strong>2. 3D printing</strong><span>1 wax piece per SKU</span></li>
-        <li class="agent-node design" style="--col:3;--row:2;--mobile-row:3;--arrival:795ms"><strong>3. Master model</strong><span>Silver or brass</span></li>
-        <li class="agent-node design" style="--col:4;--row:2;--mobile-row:4;--arrival:1060ms"><strong>4. Rubber mold</strong><span>Made from the master</span></li>
-        <li class="agent-node casting" style="--col:4;--row:3;--mobile-row:5;--arrival:1325ms"><strong>5. Wax injection</strong><span>About 100 wax pieces</span></li>
-        <li class="agent-node casting" style="--col:3;--row:3;--mobile-row:6;--arrival:1590ms"><strong>6. Wax setting</strong><span>Prepare wax pieces</span></li>
-        <li class="agent-node casting" style="--col:2;--row:3;--mobile-row:7;--arrival:1855ms"><strong>7. Wax tree</strong><span>Assemble the tree</span></li>
-        <li class="agent-node casting" style="--col:1;--row:3;--mobile-row:8;--arrival:2120ms"><strong>8. Casting</strong><span>Cast and clean</span></li>
-        <li class="agent-node casting" style="--col:1;--row:4;--mobile-row:9;--arrival:2385ms"><strong>9. Tree cutting</strong><span>Cut pieces from the tree</span></li>
-        <li class="agent-node finish" style="--col:2;--row:4;--mobile-row:10;--arrival:2650ms"><strong>10. Finishing</strong><span>Filing, tumbling, pre-polish and polish</span></li>
-        <li class="agent-node finish" style="--col:3;--row:4;--mobile-row:11;--arrival:2915ms"><strong>11. Stone setting</strong><span>Set stones and diamonds</span></li>
-        <li class="agent-node finish" style="--col:4;--row:4;--mobile-row:12;--arrival:3180ms"><strong>12. Plating</strong><span>Color or rhodium finish</span></li>
-        <li class="agent-node finish" style="--col:4;--row:5;--mobile-row:13;--arrival:3445ms"><strong>13. Quality control</strong><span>Inspect finished pieces</span></li>
-        <li class="agent-node finish" style="--col:3;--row:5;--mobile-row:14;--arrival:3710ms"><strong>14. Packing &amp; tagging</strong><span>Prepare for dispatch</span></li>
-        <li class="agent-node finish" style="--col:2;--row:5;--mobile-row:15;--arrival:3975ms"><strong>15. Shipping</strong><span>Send to the customer</span></li>
+        <li class="agent-node design" style="--col:1;--row:2;--mobile-row:1"><strong>1. CAD</strong><span>3D design</span></li>
+        <li class="agent-node design" style="--col:2;--row:2;--mobile-row:2"><strong>2. 3D printing</strong><span>1 wax piece per SKU</span></li>
+        <li class="agent-node design" style="--col:3;--row:2;--mobile-row:3"><strong>3. Master model</strong><span>Silver or brass</span></li>
+        <li class="agent-node design" style="--col:4;--row:2;--mobile-row:4"><strong>4. Rubber mold</strong><span>Made from the master</span></li>
+        <li class="agent-node casting" style="--col:4;--row:3;--mobile-row:5"><strong>5. Wax injection</strong><span>About 100 wax pieces</span></li>
+        <li class="agent-node casting" style="--col:3;--row:3;--mobile-row:6"><strong>6. Wax setting</strong><span>Prepare wax pieces</span></li>
+        <li class="agent-node casting" style="--col:2;--row:3;--mobile-row:7"><strong>7. Wax tree</strong><span>Assemble the tree</span></li>
+        <li class="agent-node casting" style="--col:1;--row:3;--mobile-row:8"><strong>8. Casting</strong><span>Cast and clean</span></li>
+        <li class="agent-node casting" style="--col:1;--row:4;--mobile-row:9"><strong>9. Tree cutting</strong><span>Cut pieces from the tree</span></li>
+        <li class="agent-node finish" style="--col:2;--row:4;--mobile-row:10"><strong>10. Finishing</strong><span>Filing, tumbling, pre-polish and polish</span></li>
+        <li class="agent-node finish" style="--col:3;--row:4;--mobile-row:11"><strong>11. Stone setting</strong><span>Set stones and diamonds</span></li>
+        <li class="agent-node finish" style="--col:4;--row:4;--mobile-row:12"><strong>12. Plating</strong><span>Color or rhodium finish</span></li>
+        <li class="agent-node finish" style="--col:4;--row:5;--mobile-row:13"><strong>13. Quality control</strong><span>Inspect finished pieces</span></li>
+        <li class="agent-node finish" style="--col:3;--row:5;--mobile-row:14"><strong>14. Packing &amp; tagging</strong><span>Prepare for dispatch</span></li>
+        <li class="agent-node finish" style="--col:2;--row:5;--mobile-row:15"><strong>15. Shipping</strong><span>Send to the customer</span></li>
       </ol>
     </div>
     <ul class="agent-legend" role="list" aria-label="Production phases">
@@ -660,6 +682,11 @@ details.card[open] p { animation: pop .35s ease; }
   var agentTrip;
   var agentStops;
   var agentMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  var agentHop = parseFloat(getComputedStyle(agentCanvas).getPropertyValue("--agent-hop"));
+  var agentColors = agentNodes.map(function (node, index) {
+    node.style.setProperty("--arrival", (index + 1) * agentHop + "ms");
+    return getComputedStyle(node).getPropertyValue("--node-accent").trim();
+  });
 
   function drawAgentFlow() {
     var bounds = agentGraph.getBoundingClientRect();
@@ -672,38 +699,57 @@ details.card[open] p { animation: pop .35s ease; }
         x: (r.left + r.right) / 2 - bounds.left, y: (r.top + r.bottom) / 2 - bounds.top
       };
     }
-    function edge(points, branch) {
-      var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-      path.setAttribute("d", "M" + points.map(function (point) { return point.join(" "); }).join("L"));
-      if (branch) path.setAttribute("data-branch", "");
-      agentEdges.appendChild(path);
+    var edgeIndex = 0;
+    function edge(points, destination, branch) {
+      var geometry = "M" + points.map(function (point) { return point.join(" "); }).join("L");
+      function path(kind) {
+        var element = agentEdges.children[edgeIndex++];
+        if (!element) {
+          element = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          element.setAttribute("class", kind);
+          agentEdges.appendChild(element);
+        }
+        element.setAttribute("d", geometry);
+        return element;
+      }
+      var route = path("agent-route");
+      if (branch) route.setAttribute("data-branch", "");
+      if (destination >= 0) {
+        var trace = path("agent-trace");
+        trace.setAttribute("pathLength", "1");
+        trace.style.setProperty("--trace-color", agentColors[destination]);
+        trace.style.setProperty("--departure", destination * agentHop + "ms");
+      }
     }
     var nodes = agentNodes.map(box);
     var entries = agentEntries.map(box);
-    agentEdges.replaceChildren();
     nodes.slice(1).forEach(function (next, i) {
       var from = nodes[i];
       if (from.top === next.top) {
         var forward = from.x < next.x;
-        edge([[forward ? from.right : from.left, from.y], [forward ? next.left - 3 : next.right + 3, next.y]]);
+        edge([[forward ? from.right : from.left, from.y], [forward ? next.left - 3 : next.right + 3, next.y]], i + 1);
       } else {
-        edge([[from.x, from.bottom], [next.x, next.top - 3]]);
+        edge([[from.x, from.bottom], [next.x, next.top - 3]], i + 1);
       }
     });
     entries.forEach(function (from, i) {
       var to = nodes[Number(agentEntries[i].dataset.entry) - 1];
       if (!desktop) {
-        edge([[from.right, from.y], [to.left - 3, to.y]], true);
+        edge([[from.right, from.y], [to.left - 3, to.y]], i === 0 ? 0 : -1, true);
       } else if (i === 2) {
         var right = bounds.width - 5;
-        edge([[from.right, from.y], [right, from.y], [right, to.y], [to.right + 3, to.y]], true);
+        edge([[from.right, from.y], [right, from.y], [right, to.y], [to.right + 3, to.y]], -1, true);
       } else {
         var turn = (from.bottom + to.top) / 2;
-        edge([[from.x, from.bottom], [from.x, turn], [to.x, turn], [to.x, to.top - 3]], true);
+        edge([[from.x, from.bottom], [from.x, turn], [to.x, turn], [to.x, to.top - 3]], i === 0 ? 0 : -1, true);
       }
     });
-    agentStops = [entries[0]].concat(nodes).map(function (node) {
-      return { transform: "translate(" + (node.right - 8) + "px," + (node.top + 6) + "px) translate(-50%, -50%)" };
+    agentStops = [entries[0]].concat(nodes).map(function (node, index) {
+      return {
+        transform: "translate(" + (node.right - 8) + "px," + (node.top + 6) + "px) translate(-50%, -50%)",
+        backgroundColor: index ? agentColors[index - 1] : "#0f6e7f",
+        easing: "cubic-bezier(.2, 0, .38, .9)"
+      };
     });
     if (agentTrip) {
       var elapsed = agentTrip.currentTime;
@@ -717,7 +763,7 @@ details.card[open] p { animation: pop .35s ease; }
     agentCanvas.classList.add("is-playing");
     agentToken.hidden = false;
     agentTrip = agentToken.animate(agentStops, {
-      duration: 3975, easing: agentMotion.matches ? "steps(15, end)" : "linear", fill: "both"
+      duration: agentNodes.length * agentHop, easing: agentMotion.matches ? "steps(" + agentNodes.length + ", end)" : "linear", fill: "both"
     });
   }
 
