@@ -147,7 +147,7 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   border: 1px solid var(--line2); border-radius: 8px; color: var(--ink); font: inherit;
   background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2344566a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 12px center / 16px no-repeat;
 }
-.agent-picker .replay { margin-inline-start: auto; min-height: 44px; }
+.agent-picker .btn { margin-inline-start: auto; }
 .agent-summary { display: grid; gap: 22px; margin: 12px 0 0; }
 .agent-summary > div { position: relative; min-width: 0; padding: 12px 14px; background: var(--soft); border: 1px solid var(--line); border-radius: 8px; }
 .agent-summary > div:last-child { background: var(--teal-bg); }
@@ -155,26 +155,24 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   content: ""; position: absolute; left: calc(50% - 4px); bottom: -15px;
   width: 8px; height: 8px; border: solid var(--faint); border-width: 0 2px 2px 0; transform: rotate(45deg);
 }
-.agent-summary > div:nth-child(2) { --flow-delay: .65s; }
-.agent-summary > div:nth-child(3) { --flow-delay: 1.3s; }
-.agent-summary.is-playing > div { animation: agent-stage .7s var(--flow-delay, 0s) ease both; }
-.agent-summary.is-playing > div:not(:last-child)::after { animation: agent-link .35s calc(var(--flow-delay, 0s) + .42s) ease both; }
+.agent-summary > div:nth-child(2) { --flow-delay: .7s; }
+.agent-summary > div:nth-child(3) { --flow-delay: 1.4s; }
+.agent-summary.is-playing > div { animation: agent-stage .8s var(--flow-delay, 0s) ease both; }
 @keyframes agent-stage {
-  40% { background: var(--teal-bg); border-color: var(--teal); box-shadow: inset 0 0 0 1px var(--teal); }
+  18%, 75% { background: #c1e7ec; border-color: var(--teal); box-shadow: inset 0 0 0 2px var(--teal); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .agent-summary.is-playing > div:not(:last-child)::after { animation: agent-link .4s calc(var(--flow-delay, 0s) + .42s) ease both; }
 }
 @keyframes agent-link {
-  50% { border-color: var(--teal); opacity: .35; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .agent-picker .replay { display: none; }
-  .agent-summary.is-playing > div, .agent-summary.is-playing > div:not(:last-child)::after { animation: none; }
+  50% { border-color: var(--teal-d); translate: var(--flow-link-x, 0) var(--flow-link-y, 4px); scale: 1.35; }
 }
 .agent-summary dt { color: var(--teal-d); font-size: 13px; font-weight: 650; }
 .agent-summary strong { display: block; margin: 3px 0 2px; color: var(--ink); font-size: 16px; font-weight: 650; }
 .agent-summary dd { color: var(--body); font-size: 14px; line-height: 1.45; }
 @container (min-width: 720px) {
   .agent-demo { padding: 18px; }
-  .agent-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .agent-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); --flow-link-x: 4px; --flow-link-y: 0; }
   .agent-summary > div:not(:last-child)::after {
     left: auto; right: -15px; top: calc(50% - 4px); bottom: auto; transform: rotate(-45deg);
   }
@@ -411,7 +409,7 @@ details.card[open] p { animation: pop .35s ease; }
         <option value="entry">Enter production data</option>
         <option value="inv">Prepare invoices</option>
       </select>
-      <button class="replay" id="agent-replay" type="button">Replay</button>
+      <button class="btn" id="agent-replay" type="button">Play animation</button>
     </div>
     <dl class="agent-summary" aria-live="polite" aria-atomic="true">
       <div><dt>Trigger</dt><dd><strong></strong><span></span></dd></div>
@@ -671,16 +669,18 @@ details.card[open] p { animation: pop .35s ease; }
     void agentSummary.offsetWidth;
     agentSummary.classList.add("is-playing");
   }
+  var motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
   var agentFlowObserver;
   if (window.IntersectionObserver) {
     agentFlowObserver = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) playAgentFlow();
+      if (entries[0].isIntersecting && !motionPreference.matches) playAgentFlow();
     }, { root: frame, threshold: 0.35 });
     agentFlowObserver.observe(agentSummary);
   }
   agentExample.addEventListener("change", function () {
     showAgentExample();
-    playAgentFlow();
+    if (motionPreference.matches) agentSummary.classList.remove("is-playing");
+    else playAgentFlow();
   });
   $("agent-replay").addEventListener("click", playAgentFlow);
   showAgentExample();
