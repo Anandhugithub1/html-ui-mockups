@@ -144,26 +144,28 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-demo .agent-demo-head { justify-content: flex-start; padding: 13px 16px; }
 .agent-demo-head h3 { font-size: 14px; font-weight: 700; }
 .agent-activity { margin: 0; padding: 0; list-style: none; }
-.agent-activity > li { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+.agent-activity > li { display: flex; align-items: baseline; gap: 10px; padding: 8px 16px; border-bottom: 1px solid var(--line); }
 .agent-activity > li > span {
   flex: none; min-width: 72px; padding: 3px 7px; border-radius: 999px; background: #eaf0f5;
   color: #42566c; text-align: center; font-size: 12px; font-weight: 650;
 }
 .agent-activity .is-agent { background: var(--teal-bg); color: var(--teal-d); }
 .agent-step-details, .agent-routes-detail {
-  flex: 1; min-width: 0; display: grid; gap: 8px 22px; margin: 0;
+  flex: 1; min-width: 0; display: grid; gap: 5px 18px; margin: 0;
   color: var(--body); font-size: 14px; line-height: 1.4;
 }
 .agent-step-details { padding-inline-start: 1.7em; }
 .agent-step-details li::marker { color: var(--faint); font-variant-numeric: tabular-nums; }
 .agent-routes-detail { padding: 0; list-style: none; }
 .agent-activity :is(.agent-step-details, .agent-routes-detail) strong { color: var(--ink); font-weight: 650; }
-.agent-activity :is(.agent-step-details, .agent-routes-detail) span { display: block; }
 @container (min-width: 720px) {
   .agent-step-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .agent-routes-detail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
+@container (min-width: 1040px) {
+  .agent-step-details { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 .agent-demo.is-playing .agent-activity > li[style] { animation: agent-log-update 1.16s calc(var(--phase-start) + 250ms) var(--agent-ease) both; }
 @keyframes agent-log-update { 24%, 73% { background: #eef7f9; } }
 .agent-result { padding: 10px 16px; color: #164f37; background: #eef8f2; font-size: 14px; font-weight: 650; }
@@ -458,44 +460,44 @@ details.card[open] p { animation: pop .35s ease; }
       <li>
         <span>Routing</span>
         <ul class="agent-routes-detail" role="list" aria-label="Starting routes">
-          <li><strong>New SKU</strong><span>Start at step 1 · CAD</span></li>
-          <li><strong>Master exists</strong><span>Start at step 4 · Rubber mold</span></li>
-          <li><strong>Rubber mold exists</strong><span>Reorder at step 5 · Wax injection</span></li>
+          <li><strong>New SKU</strong><span> · Step 1, CAD</span></li>
+          <li><strong>Master exists</strong><span> · Step 4, rubber mold</span></li>
+          <li><strong>Rubber mold exists</strong><span> · Step 5, wax injection (reorder)</span></li>
         </ul>
       </li>
       <li style="--phase:0">
         <span class="is-agent">Design</span>
         <ol class="agent-step-details" start="1" aria-label="Design steps">
-          <li><strong>CAD</strong><span>Create the 3D design.</span></li>
-          <li><strong>3D printing</strong><span>Print one wax piece per SKU.</span></li>
-          <li><strong>Master model</strong><span>Make the master in silver or brass.</span></li>
-          <li><strong>Rubber mold</strong><span>Make the mold from the master.</span></li>
+          <li><strong>CAD</strong><span> · 3D design</span></li>
+          <li><strong>3D printing</strong><span> · One wax print per SKU</span></li>
+          <li><strong>Master model</strong><span> · Silver or brass</span></li>
+          <li><strong>Rubber mold</strong><span> · From the master</span></li>
         </ol>
       </li>
       <li style="--phase:1">
         <span>Casting</span>
         <ol class="agent-step-details" start="5" aria-label="Casting steps">
-          <li><strong>Wax injection</strong><span>Make about 100 wax pieces in this example.</span></li>
-          <li><strong>Wax setting</strong><span>Prepare the wax pieces before tree assembly.</span></li>
-          <li><strong>Wax tree</strong><span>Assemble the wax pieces into a tree.</span></li>
-          <li><strong>Casting</strong><span>Cast the pieces and clean them after casting.</span></li>
-          <li><strong>Tree cutting</strong><span>Cut the cast pieces from the tree.</span></li>
+          <li><strong>Wax injection</strong><span> · About 100 wax pieces</span></li>
+          <li><strong>Wax setting</strong><span> · Prepare wax pieces</span></li>
+          <li><strong>Wax tree</strong><span> · Assemble wax pieces</span></li>
+          <li><strong>Casting</strong><span> · Cast and clean</span></li>
+          <li><strong>Tree cutting</strong><span> · Separate the cast pieces</span></li>
         </ol>
       </li>
       <li style="--phase:2">
         <span class="is-agent">Finishing</span>
         <ol class="agent-step-details" start="10" aria-label="Finishing steps">
-          <li><strong>Finishing</strong><span>File, tumble, pre-polish, and polish.</span></li>
-          <li><strong>Stone setting</strong><span>Set stones and diamonds.</span></li>
-          <li><strong>Plating</strong><span>Apply the required color or rhodium finish.</span></li>
-          <li><strong>Quality control</strong><span>Inspect the finished pieces.</span></li>
+          <li><strong>Finishing</strong><span> · File, tumble, pre-polish, polish</span></li>
+          <li><strong>Stone setting</strong><span> · Set stones and diamonds</span></li>
+          <li><strong>Plating</strong><span> · Color or rhodium finish</span></li>
+          <li><strong>Quality control</strong><span> · Inspect finished pieces</span></li>
         </ol>
       </li>
       <li style="--phase:3">
         <span>Dispatch</span>
         <ol class="agent-step-details" start="14" aria-label="Dispatch steps">
-          <li><strong>Packing &amp; tagging</strong><span>Tag and pack the pieces for dispatch.</span></li>
-          <li><strong>Shipping</strong><span>Send the finished order to the customer.</span></li>
+          <li><strong>Packing &amp; tagging</strong><span> · Prepare for dispatch</span></li>
+          <li><strong>Shipping</strong><span> · Send to the customer</span></li>
         </ol>
       </li>
     </ul>
