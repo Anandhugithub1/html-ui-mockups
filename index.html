@@ -139,57 +139,27 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .chiprow .lb { font-size: 12px; color: var(--faint); }
 
 /* agents */
-.agents { display: grid; gap: 20px; margin-top: 28px; align-items: start; }
-.jobs { display: grid; gap: 20px; }
-.scene:not(.flow) svg { max-width: 720px; margin: 0 auto; }
-.scn { display: flex; flex-wrap: wrap; gap: 6px; }
-.scn button { text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 14px; min-height: 44px; font-size: 14px; font-weight: 500; color: var(--body); transition: border-color .15s; }
-.scn button:hover { border-color: var(--teal); }
-.scn button[aria-pressed="true"] { border-color: var(--teal); background: var(--teal-bg); color: var(--ink); }
-.scn button small { display: none; font-weight: 400; color: var(--faint); font-size: 13px; margin-top: 2px; }
-.step { display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px; border-bottom: 1px solid #eef2f6; font-size: 14px; opacity: 0; transform: translateY(8px); transition: opacity .35s ease, transform .35s ease; }
-.step:last-child { border-bottom: 0; } .step.on { opacity: 1; transform: none; }
-.step .who { flex: 0 0 84px; font-size: 12px; font-weight: 500; padding: 3px 0; border-radius: 999px; text-align: center; background: var(--slate-bg); color: var(--slate); }
-.step .who.ai { background: var(--teal-bg); color: var(--teal-d); }
-.step .tx { flex: 1 1 0; min-width: 0; }
+.agent-demo { margin-top: 20px; padding: 16px; }
+.agent-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.agent-picker label { font-weight: 600; }
+.agent-picker select {
+  appearance: none; min-height: 44px; max-width: 100%; padding: 8px 36px 8px 12px;
+  border: 1px solid var(--line2); border-radius: 8px; color: var(--ink); font: inherit;
+  background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2344566a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 12px center / 16px no-repeat;
+}
+.agent-summary { display: grid; gap: 8px; margin: 12px 0 0; }
+.agent-summary > div { min-width: 0; padding: 12px 14px; background: var(--soft); border-radius: 8px; }
+.agent-summary > div:last-child { background: var(--teal-bg); }
+.agent-summary dt { color: var(--teal-d); font-size: 13px; font-weight: 650; }
+.agent-summary strong { display: block; margin: 3px 0 2px; color: var(--ink); font-size: 16px; font-weight: 650; }
+.agent-summary dd { color: var(--body); font-size: 14px; line-height: 1.45; }
+@container (min-width: 720px) {
+  .agent-demo { padding: 18px; }
+  .agent-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+}
 .replay { background: none; border: 1px solid var(--line2); border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 500; min-height: 32px; }
 .replay:hover { background: var(--soft); }
-.outcome { padding: 12px 16px; background: var(--green-bg); color: var(--green); font-size: 14px; font-weight: 500; border-top: 1px solid var(--line); }
-
-/* agent scene */
-.scene { background: radial-gradient(circle, #cfdbe5 1px, transparent 1.2px) 0 0 / 18px 18px, linear-gradient(#f9fbfd, #f1f6f9); border-bottom: 1px solid var(--line); }
-.scene svg { display: block; width: 100%; height: auto; }
-.scene .edge { stroke: #b9c7d3; stroke-width: 2; stroke-dasharray: 5 7; animation: flow 1.2s linear infinite; }
-.scene .edge.hot { stroke: var(--teal); stroke-width: 3; }
-.scene .nbox rect { fill: #fff; stroke: var(--line2); stroke-width: 1.5; transition: fill .3s, stroke .3s; }
-.scene .nbox text { font: 500 19px var(--font); fill: var(--ink); }
-.scene .node.hot .nbox rect { fill: var(--teal-bg); stroke: var(--teal); stroke-width: 2.5; }
-.scene .node.done .nbox rect { stroke: #1f9d57; }
-.scene .nbox { transform-box: view-box; }
-.scene .node.pop .nbox { animation: npop .55s cubic-bezier(.2,1.6,.4,1); }
-.scene .badge { opacity: 0; transform-box: fill-box; transition: opacity .3s; } .scene .badge circle { fill: #1f9d57; }
-.scene .badge .ck { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.scene .node.done .badge { opacity: 1; }
-.scene .core { fill: var(--ink); filter: drop-shadow(0 0 14px rgba(15,110,127,.55)); animation: breathe 2.4s ease-in-out infinite; transform-origin: 320px 145px; }
-.scene .hubt { font: 600 20px var(--font); fill: #fff; }
-.scene .ring { fill: none; stroke: var(--teal); stroke-width: 1.5; stroke-dasharray: 3 9; opacity: .7; }
-.scene .orb { animation: spin 9s linear infinite; } .scene .sat { fill: var(--teal); } .scene .sat2 { fill: #c8a24a; }
-.scene .rip { fill: none; stroke: var(--teal); stroke-width: 3; transform-box: fill-box; transform-origin: center; animation: ripple .9s ease-out forwards; }
-.scene .rip.ext { stroke: #64748b; }
-.scene .pk0 { fill: var(--teal); filter: drop-shadow(0 0 6px var(--teal)); } .scene .pk1 { fill: var(--teal); opacity: .5; } .scene .pk2 { fill: var(--teal); opacity: .25; }
-.scene .bit { fill: #c8a24a; animation: burst .95s ease-out forwards; }
-.prog { height: 3px; background: var(--line); } .prog i { display: block; height: 100%; width: 0; background: var(--teal); }
-.outcome { display: flex; align-items: center; gap: 8px; }
-.outcome.pop { animation: pop .5s ease; }
-.okck { stroke-dasharray: 26; stroke-dashoffset: 26; animation: draw .5s .15s ease forwards; }
-@keyframes flow { to { stroke-dashoffset: -24; } }
 @keyframes spin { to { transform: rotate(360deg); } }
-@keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
-@keyframes ripple { from { transform: scale(1); opacity: .7; } to { transform: scale(2.1); opacity: 0; } }
-@keyframes npop { 0% { transform: scale(1); } 40% { transform: scale(1.12); } 100% { transform: scale(1); } }
-@keyframes burst { from { transform: translate(0,0) scale(1); opacity: 1; } to { transform: translate(var(--dx), var(--dy)) scale(.2); opacity: 0; } }
-@keyframes draw { to { stroke-dashoffset: 0; } }
-
 /* stock + cost tables */
 .feat { display: grid; gap: 28px; align-items: center; }
 .feat ul { list-style: none; padding: 0; margin-top: 20px; display: grid; gap: 10px; color: var(--body); font-size: 16px; line-height: 1.5; }
@@ -323,39 +293,13 @@ details.card[open] p { animation: pop .35s ease; }
 .trust li { display: flex; align-items: center; gap: 8px; } .trust svg { color: #1f9d57; flex: none; }
 .btn .play { margin-right: 8px; flex: none; }
 
-/* department chain */
-.dflow { margin-top: 36px; }
-.lanes { display: grid; gap: 12px; margin-top: 12px; }
-.lane { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--bg); }
-.lane .ln { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
-.lane.p .ln { color: #4b3fb0; } .lane.t .ln { color: var(--teal-d); } .lane.o .ln { color: #9a4118; }
-.dcs { display: flex; flex-wrap: wrap; gap: 6px; }
-.dc { font-size: 13px; font-weight: 500; padding: 5px 11px; border-radius: 8px; border: 1px solid transparent; transition: background .35s, color .35s, transform .35s, opacity .35s; counter-increment: dc; }
-.lane.p .dc { background: #efecfb; color: #4b3fb0; } .lane.t .dc { background: var(--teal-bg); color: var(--teal-d); } .lane.o .dc { background: #fdeee6; color: #9a4118; }
-.dc.lit { background: var(--ink) !important; color: #fff !important; transform: scale(1.07); box-shadow: 0 4px 12px rgba(11,31,46,.25); }
-.dc.skip { opacity: .4; text-decoration: line-through; }
-
-/* factory flowchart scene */
-.scene.flow { overflow-x: auto; } .scene.flow svg { min-width: 760px; }
-.fe { stroke: #94a3b8; stroke-width: 1.6; }
-.fb rect { transition: fill .4s, stroke .4s; stroke-width: 1.5; }
-.fb.p rect { fill: #efecfb; stroke: #9b8fe6; } .fb.t rect { fill: #e3f3f6; stroke: #6bb5c3; } .fb.o rect { fill: #fdeee6; stroke: #e5a07d; } .fb.g rect { fill: #eef2f6; stroke: #a3b0be; }
-.fb .tt { font: 600 16px var(--font); fill: var(--ink); transition: fill .4s; } .fb .ss { font: 400 12.5px var(--font); fill: var(--body); transition: fill .4s; }
-.fb.lit rect { fill: var(--ink); stroke: var(--ink); } .fb.lit .tt { fill: #fff; } .fb.lit .ss { fill: #cfdbe5; }
-.fb.nob .bd { display: none; }
-.fb.skip { opacity: .4; } .fb.skip rect { stroke-dasharray: 4 4; }
-.fb.pop { animation: npop .55s cubic-bezier(.2,1.6,.4,1); transform-box: fill-box; transform-origin: center; }
-.fb .bd { opacity: 0; transition: opacity .3s; } .fb.lit .bd { opacity: 1; } .fb .bd circle { fill: var(--teal); stroke: #fff; stroke-width: 2; } .fb .bd text { font: 700 13px var(--font); fill: #fff; }
-.fm circle { fill: var(--teal); stroke: #fff; stroke-width: 3; filter: drop-shadow(0 0 8px rgba(15,110,127,.7)); } .fm text { font: 700 12px var(--font); fill: #fff; text-anchor: middle; }
-.lg.p { fill: #efecfb; stroke: #9b8fe6; } .lg.t { fill: #e3f3f6; stroke: #6bb5c3; } .lg.o { fill: #fdeee6; stroke: #e5a07d; } .lgt { font: 400 13px var(--font); fill: var(--body); }
-
 /* UX notes */
 .note { display: none; background: #fff7d6; border: 1px solid #f1d98a; color: #5b4a0b; border-radius: 8px; padding: 8px 12px; font-size: 13px; margin-bottom: 16px; }
 .notes .note { display: block; } .hd .note { margin: 0; border-radius: 0; border-inline: 0; }
 
 /* responsive, by frame width */
 @container (min-width: 600px) {
-  .mgrid { grid-template-columns: repeat(2, 1fr); } .scn button small { display: block; }
+  .mgrid { grid-template-columns: repeat(2, 1fr); }
   .fields { grid-template-columns: 1fr 1fr; } .groups { grid-template-columns: repeat(2, 1fr); } .faqs { grid-template-columns: repeat(2, 1fr); }
   .login { display: block; } .logos { grid-template-columns: repeat(6, 1fr); } .actions { flex-direction: row; }
   .orow .mt { display: block; } .gt { grid-template-columns: 1.4fr .9fr .9fr .9fr 1.2fr; } .gt .iss { display: block; }
@@ -365,9 +309,7 @@ details.card[open] p { animation: pop .35s ease; }
 @container (min-width: 960px) {
   .hero .wrap { grid-template-columns: 0.95fr 1.05fr; padding-block: 72px 80px; gap: 48px; } h1.t { font-size: 52px; } .lead { font-size: 18px; }
   .mgrid { grid-template-columns: repeat(3, 1fr); } .groups { grid-template-columns: repeat(3, 1fr); }
-  .jobs { grid-template-columns: 1fr 1fr; gap: 24px; } .scn { flex-direction: column; flex-wrap: nowrap; }
   .mflow ol { grid-template-columns: repeat(4, 1fr); }
-  .lanes { grid-template-columns: 1.15fr .9fr 1.35fr; }
   .feat { grid-template-columns: 0.8fr 1.2fr; gap: 64px; } .feat.rev { grid-template-columns: 1.2fr 0.8fr; } .feat.rev > :first-child { order: 2; }
   .demo { grid-template-columns: 0.8fr 1.2fr; gap: 64px; } .sec { padding-block: 88px; }
   .hrow { grid-template-columns: 1fr 250px; }
@@ -435,25 +377,26 @@ details.card[open] p { animation: pop .35s ease; }
 </div></section>
 
 <section class="sec" id="agents"><div class="wrap">
-  <p class="eyebrow">AI agents</p>
-  <h2 class="t" style="max-width:680px">Agents do the work. You approve the result.</h2>
-  <p class="lead" style="max-width:620px">Pick a job to watch an agent run it, start to finish.</p>
-  <p class="note" style="margin-top:16px">Six jobs in three groups: orders, stock, paperwork. Each is a 10 to 20 second motion clip in production, shown here as a live run.</p>
-  <div class="agents">
-    <div class="jobs">
-      <div><p class="small" style="margin-bottom:8px">Orders and people</p><div class="scn" id="scnA"></div></div>
-      <div><p class="small" style="margin-bottom:8px">Stock and paperwork</p><div class="scn" id="scnB"></div></div>
+  <h2 class="t">See an AI agent at work</h2>
+  <div class="card agent-demo">
+    <div class="agent-picker">
+      <label for="agent-example">Example</label>
+      <select id="agent-example">
+        <option value="follow">Coordinate departments</option>
+        <option value="order">Place and track orders</option>
+        <option value="third">Manage outside workshops</option>
+        <option value="stock">Track inventory</option>
+        <option value="entry">Enter production data</option>
+        <option value="inv">Prepare invoices</option>
+      </select>
     </div>
-    <div class="win">
-      <div class="top"><b style="font-weight:500" id="runTitle"></b><button class="replay" id="replay" type="button">Replay</button></div>
-      <div class="scene"><svg id="scene" viewBox="0 0 640 296" role="img" aria-label="The agent in the middle, exchanging messages with the people and systems this job involves"></svg></div>
-      <div class="prog" aria-hidden="true"><i id="prog"></i></div>
-      <div id="steps" role="list"></div>
-      <p class="outcome" id="outcome"></p>
-    </div>
+    <dl class="agent-summary" aria-live="polite" aria-atomic="true">
+      <div><dt>Trigger</dt><dd><strong></strong><span></span></dd></div>
+      <div><dt>Agent action</dt><dd><strong></strong><span></span></dd></div>
+      <div><dt>Outcome</dt><dd><strong></strong><span></span></dd></div>
+    </dl>
   </div>
 </div></section>
-
 <section class="sec alt" id="stock"><div class="wrap feat">
   <div>
     <p class="eyebrow gold">Stock control</p>
@@ -657,186 +600,49 @@ details.card[open] p { animation: pop .35s ease; }
   pp.addEventListener("click", function () { paused = !paused; label(); if (paused) clearTimeout(loopT); else run(); });
   restart(); label(); run();
 
-  /* agents: the agent sits in the middle; data packets fly between it and the people and systems it works with. */
-  var NS = "http://www.w3.org/2000/svg", HUB = [320, 145];
-  var SLOT = { L: [92, 145], TL: [190, 46], TR: [450, 46], R: [548, 145], B: [320, 252] };
-  /* step: [who, text, node index]. Not "Agent" = the node sends to the agent; "Agent" = the agent acts on the node. */
-  var jobs = {
-    order: ["Place and track orders", "From a chat message to a delivery date",
-      [["Customer", "L"], ["Stock", "TL"], ["Purchasing", "TR"], ["Supplier", "R"]],
-      [["Customer", "Asks for 20 rings on LINE", 0], ["Agent", "Creates sales order SO-1042 and checks metal and stone stock", 1],
-       ["Agent", "Places a purchase order for the missing 18K gold", 2], ["Supplier", "Confirms delivery for Thursday", 3],
-       ["Agent", "Sends the customer the delivery date on LINE", 0]], "Order placed and tracked. Nobody typed it in."],
-    follow: ["Coordinate departments", "From design to shipping, nobody waits", "flow",
-      [["Agent", "Sees the rubber mold already exists, so this reorder starts at wax injection (step 5)", 0, [4], [0, 1, 2, 3], 17], ["Department", "Casting reports it is 6 hours behind", 0, [7]],
-       ["Agent", "Moves finishing to Wednesday morning: filing, tumbling and polish", 0, [9]], ["Agent", "Books the stone setting and plating slots for the new date", 0, [10, 11]],
-       ["Agent", "Updates QC, packing and shipping so the customer gets the right date", 0, [12, 13, 14]]], "Every department knows the new date. Nobody waits."],
-    third: ["Manage third parties", "Suppliers and outside workshops, end to end",
-      [["Outside setter", "L"], ["Weighing", "TL"], ["Approver", "TR"], ["Accounts", "R"]],
-      [["Agent", "Sends 40 pieces to the outside setter, with a metal weight", 0], ["Supplier", "Returns 40 pieces and scrap by QR scan", 0],
-       ["Agent", "Weighs in and compares with what was issued", 1], ["Agent", "Flags a 0.9 g shortfall for review", 2],
-       ["Agent", "Raises the setter's invoice after you approve", 3]], "Outside work reconciled to the gram."],
-    stock: ["Track inventory", "Every scan updates the stock",
-      [["Worker (QR)", "L"], ["Vault A", "TL"], ["Stock level", "TR"], ["Purchasing", "R"], ["Manager", "B"]],
-      [["Worker", "Scans a QR code on tray 3", 0], ["Agent", "Moves 12 diamonds from Vault A to Bench 2", 1],
-       ["Agent", "Sees platinum below the minimum level", 2], ["Agent", "Drafts a purchase request", 3], ["Manager", "Approves it with one tap", 4]], "Stock always matches the shelf."],
-    entry: ["Enter production data", "Workers report, the agent records",
-      [["Worker (LINE)", "L"], ["Job card", "TL"], ["Production", "R"]],
-      [["Worker", "Sends a photo of the job card on LINE", 0], ["Agent", "Reads the item code, weights and hours", 1],
-       ["Agent", "Asks the worker to confirm two numbers", 0], ["Worker", "Replies yes", 0], ["Agent", "Posts the production entry and the metal loss", 2]], "Production data entered in under a minute."],
-    inv: ["Purchase and sales invoices", "Paperwork prepared for you",
-      [["Supplier", "L"], ["Purchase order", "TL"], ["Approver", "TR"], ["Ledger", "R"]],
-      [["Supplier", "Emails a bill as a PDF", 0], ["Agent", "Reads it and matches it to the purchase order", 1],
-       ["Agent", "Routes it to the approver", 2], ["Manager", "Approves", 2], ["Agent", "Posts the bill and sends the sales invoice for WO-0409", 3]], "Invoices ready without manual entry."]
+  /* Agent examples */
+  var examples = {
+    follow: [
+      ["Casting runs late", "The department reports a six-hour delay."],
+      ["Adjusts the schedule", "The agent rebooks finishing and alerts the teams downstream."],
+      ["Teams get the new date", "Quality check, packing and shipping see the same plan."]
+    ],
+    order: [
+      ["A customer messages on LINE", "They ask for 20 rings."],
+      ["Creates the order", "The agent checks stock and orders the missing gold."],
+      ["Customer gets a date", "The agent confirms timing with the supplier and replies on LINE."]
+    ],
+    third: [
+      ["A workshop returns a batch", "The setter scans in 40 pieces and the leftover scrap."],
+      ["Checks the return weight", "The agent compares what came back with what went out."],
+      ["You review the shortfall", "The agent flags 0.9 g before it raises the setter’s invoice."]
+    ],
+    stock: [
+      ["A worker scans a tray", "Twelve diamonds move from the vault to a bench."],
+      ["Updates stock", "The agent records the transfer and drafts a request when platinum runs low."],
+      ["You approve the purchase", "The inventory reflects the transfer as soon as it’s scanned."]
+    ],
+    entry: [
+      ["A worker sends a photo", "The job card comes in through LINE."],
+      ["Reads the job card", "The agent extracts the item code, weights and labor hours."],
+      ["Production records update", "The agent posts the entry after the worker confirms the figures."]
+    ],
+    inv: [
+      ["A supplier emails a bill", "The invoice arrives as a PDF."],
+      ["Matches the paperwork", "The agent checks the bill against the purchase order."],
+      ["You approve the bill", "The agent posts the bill after approval."]
+    ]
   };
-  var jobA = ["follow", "order", "third"], jobB = ["stock", "entry", "inv"], cur = "follow", timers = [], pk = 0, scene = $("scene"), pos = [], nodeEls = [], edgeEls = [], hubG = null, layer = null;
-  function el(tag, attrs, parent) { var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
-  function btns(keys) { return keys.map(function (k) { return '<button type="button" data-k="' + k + '" aria-pressed="' + (k === cur) + '">' + esc(jobs[k][0]) + "<small>" + esc(jobs[k][1]) + "</small></button>"; }).join(""); }
-  function buildScene(nodes) {
-    scene.innerHTML = ""; scene.parentNode.classList.remove("flow"); pos = []; nodeEls = []; edgeEls = [];
-    scene.setAttribute("viewBox", "0 0 640 " + (nodes.some(function (n) { return n[1] === "B"; }) ? 296 : 238));
-    var gE = el("g", {}, scene); layer = el("g", {}, scene); var gN = el("g", {}, scene); hubG = el("g", {}, scene);
-    nodes.forEach(function (n) {
-      var p = SLOT[n[1]]; pos.push(p);
-      edgeEls.push(el("line", { x1: HUB[0], y1: HUB[1], x2: p[0], y2: p[1], class: "edge" }, gE));
-      var g = el("g", { class: "node" }, gN), box = el("g", { class: "nbox", style: "transform-origin:" + p[0] + "px " + p[1] + "px" }, g);
-      el("rect", { x: p[0] - 80, y: p[1] - 24, width: 160, height: 48, rx: 12 }, box);
-      var t = el("text", { x: p[0], y: p[1] + 6, "text-anchor": "middle" }, box); t.textContent = n[0];
-      var b = el("g", { class: "badge", transform: "translate(" + (p[0] + 72) + "," + (p[1] - 24) + ")" }, g);
-      el("circle", { r: 11 }, b); el("path", { d: "M-5 0l3.5 3.5L5.5 -3.5", class: "ck" }, b);
-      nodeEls.push(g);
-    });
-    el("circle", { cx: HUB[0], cy: HUB[1], r: 54, class: "ring" }, hubG);
-    var orb = el("g", { class: "orb", style: "transform-origin:" + HUB[0] + "px " + HUB[1] + "px" }, hubG);
-    el("circle", { cx: HUB[0] + 54, cy: HUB[1], r: 5, class: "sat" }, orb); el("circle", { cx: HUB[0] - 54, cy: HUB[1], r: 4, class: "sat2" }, orb);
-    el("circle", { cx: HUB[0], cy: HUB[1], r: 40, class: "core" }, hubG);
-    var h = el("text", { x: HUB[0], y: HUB[1] + 6, "text-anchor": "middle", class: "hubt" }, hubG); h.textContent = "Agent";
-  }
-  function ripple(p, cls) { var c = el("circle", { cx: p[0], cy: p[1], r: 40, class: "rip " + (cls || "") }, layer); c.addEventListener("animationend", function () { c.remove(); }); }
-  function burst() {
-    for (var i = 0; i < 14; i++) {
-      var a = i / 14 * Math.PI * 2, d = 70 + (i % 3) * 22, c = el("circle", { cx: HUB[0], cy: HUB[1], r: 3 + (i % 2), class: "bit", style: "--dx:" + Math.cos(a) * d + "px;--dy:" + Math.sin(a) * d + "px" }, layer);
-      c.addEventListener("animationend", function () { this.remove(); });
-    }
-  }
-  function packet(from, to, ms, cb) {
-    var trail = [0, 1, 2].map(function (i) { return el("circle", { r: 7 - i * 2, class: "pk" + i }, layer); });
-    var t0 = null;
-    pk = requestAnimationFrame(function f(t) {
-      if (t0 === null) t0 = t;
-      var k = Math.min(1, (t - t0) / ms);
-      trail.forEach(function (c, i) {
-        var q = Math.max(0, k - i * 0.07), e = q < .5 ? 2 * q * q : 1 - Math.pow(-2 * q + 2, 2) / 2;
-        c.setAttribute("cx", from[0] + (to[0] - from[0]) * e); c.setAttribute("cy", from[1] + (to[1] - from[1]) * e);
-      });
-      if (k < 1) pk = requestAnimationFrame(f); else { trail.forEach(function (c) { c.remove(); }); cb(); }
+  var agentExample = $("agent-example");
+  var summaryFields = document.querySelectorAll(".agent-summary dd");
+  function showAgentExample() {
+    examples[agentExample.value].forEach(function (step, index) {
+      summaryFields[index].firstElementChild.textContent = step[0];
+      summaryFields[index].lastElementChild.textContent = step[1];
     });
   }
-  function typeInto(node, text) {
-    var n = 0; (function f() { node.textContent = text.slice(0, ++n); if (n < text.length) timers.push(setTimeout(f, 14)); })();
-  }
-  /* the factory chain: the agent walks the departments; each one it touches lights up with its step number */
-  var FC = [122.5, 367.5, 612.5, 857.5], FR = [8, 98, 198, 298, 398], BW = 205, BH = 62, FB = [], fm = null, fcur = [0, 0];
-  var FD = [[0, 1, "CAD", "3D design", "p"], [1, 1, "3D printing", "1 wax pc per SKU", "p"], [2, 1, "Master model", "Silver / brass", "p"], [3, 1, "Rubber mold", "From master", "p"], [3, 2, "Wax injection", "~100 wax pcs", "t"], [2, 2, "Wax setting", "Before tree", "t"], [1, 2, "Wax tree", "Assemble", "t"], [0, 2, "Casting", "Cast + post-cast", "t"], [0, 3, "Tree cutting", "Cut from tree", "t"], [1, 3, "Finishing", "Filing, tumbling, polish", "o"], [2, 3, "Stone setting", "Stones, diamonds", "o"], [3, 3, "Plating", "Color, rhodium", "o"], [3, 4, "QC", "Quality check", "o"], [2, 4, "Pack + tag", "Final prep", "o"], [1, 4, "Shipping", "To customer", "o"], [0, 0, "New SKU", "Start at step 1", "g"], [2, 0, "Master exists", "Start at step 4", "g"], [3, 0, "Rubber exists", "Reorder: step 5", "g"]];
-  var EDGES = ["M122.5 70V98", "M225.0 129.0H265.0", "M470.0 129.0H510.0", "M715.0 129.0H755.0", "M612.5 70V86H857.5V98", "M960.0 39.0H978V229.0H960.0", "M857.5 160V198", "M755.0 229.0H715.0", "M510.0 229.0H470.0", "M265.0 229.0H225.0", "M122.5 260V298", "M225.0 329.0H265.0", "M470.0 329.0H510.0", "M715.0 329.0H755.0", "M857.5 360V398", "M755.0 429.0H715.0", "M510.0 429.0H470.0"];
-  function fcen(i) { return [FC[FD[i][0]], FR[FD[i][1]] + BH / 2]; }
-  function buildFlow() {
-    scene.innerHTML = ""; scene.parentNode.classList.add("flow"); scene.setAttribute("viewBox", "0 0 990 500"); FB = [];
-    var mk = el("marker", { id: "ah", viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" }, el("defs", {}, scene));
-    el("path", { d: "M0 0L10 5L0 10z", fill: "#94a3b8" }, mk);
-    EDGES.forEach(function (d) { el("path", { d: d, class: "fe", fill: "none", "marker-end": "url(#ah)" }, scene); });
-    FD.forEach(function (d, i) {
-      var c = fcen(i), g = el("g", { class: "fb " + d[4] }, scene);
-      el("rect", { x: c[0] - BW / 2, y: c[1] - BH / 2, width: BW, height: BH, rx: 11 }, g);
-      var t = el("text", { x: c[0], y: c[1] - 3, "text-anchor": "middle", class: "tt" }, g); t.textContent = (i < 15 ? (i + 1) + ". " : "") + d[2];
-      var u = el("text", { x: c[0], y: c[1] + 16, "text-anchor": "middle", class: "ss" }, g); u.textContent = d[3];
-      var bd = el("g", { class: "bd", transform: "translate(" + (c[0] + BW / 2 - 4) + "," + (c[1] - BH / 2 + 2) + ")" }, g);
-      el("circle", { r: 12 }, bd); var n = el("text", { y: 4.5, "text-anchor": "middle" }, bd);
-      FB.push([g, n]);
-    });
-    [[20, "Design, models", "p"], [290, "Wax, casting", "t"], [520, "Finishing, delivery", "o"]].forEach(function (l) {
-      el("rect", { x: l[0], y: 475, width: 14, height: 14, rx: 3, class: "lg " + l[2] }, scene); var t = el("text", { x: l[0] + 22, y: 487, class: "lgt" }, scene); t.textContent = l[1];
-    });
-    fm = el("g", { class: "fm", style: "opacity:0" }, scene); el("circle", { r: 16 }, fm); var m = el("text", { y: 4.5 }, fm); m.textContent = "AI";
-    fcur = fpos(15); fm.setAttribute("transform", "translate(" + fcur[0] + "," + fcur[1] + ")");
-  }
-  function fpos(i) { var c = fcen(i); return [c[0] - BW / 2 + 6, c[1] - BH / 2 + 2]; }
-  function fripple(p) { var c = el("circle", { cx: p[0], cy: p[1], r: 34, class: "rip" }, scene); c.addEventListener("animationend", function () { c.remove(); }); }
-  function flit(d, n, anim) {
-    var b = FB[d]; b[0].classList.add("lit"); b[1].textContent = n;
-    if (anim) { b[0].classList.remove("pop"); void b[0].getBoundingClientRect(); b[0].classList.add("pop"); fripple(fcen(d)); }
-  }
-  function fskip(st) { (st[4] || []).forEach(function (d) { FB[d][0].classList.add("skip"); }); }
-  function flowInstant(steps) {
-    steps.forEach(function (st, i) { fskip(st); (st[5] !== undefined) && FB[st[5]][0].classList.add("lit", "nob"); st[3].forEach(function (d) { flit(d, i + 1, false); }); });
-    var last = steps[steps.length - 1], p = fpos(last[3][last[3].length - 1]); fm.style.opacity = 1; fm.setAttribute("transform", "translate(" + p[0] + "," + p[1] + ")");
-  }
-  function glide(to, ms, cb) {
-    var from = fcur, t0 = null;
-    fm.style.opacity = 1;
-    pk = requestAnimationFrame(function f(t) {
-      if (t0 === null) t0 = t;
-      var k = Math.min(1, (t - t0) / ms), e = k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
-      fm.setAttribute("transform", "translate(" + (from[0] + (to[0] - from[0]) * e) + "," + (from[1] + (to[1] - from[1]) * e) + ")");
-      if (k < 1) pk = requestAnimationFrame(f); else { fcur = to; cb(); }
-    });
-  }
-  function flowRun(i, st, row) {
-    fskip(st); row.classList.add("on"); typeInto(row.lastChild, st[1]);
-    var dests = st[3], k = 0;
-    function next() {
-      if (k >= dests.length) return;
-      var d = dests[k++]; glide(fpos(d), 750, function () { flit(d, i + 1, true); timers.push(setTimeout(next, 250)); });
-    }
-    if (st[5] !== undefined) { fcur = fpos(st[5]); fm.setAttribute("transform", "translate(" + fcur[0] + "," + fcur[1] + ")"); fm.style.opacity = 1; FB[st[5]][0].classList.add("lit", "nob"); fripple(fcen(st[5])); timers.push(setTimeout(next, 700)); }
-    else next();
-  }
-  function doneMark(i) { nodeEls[i].classList.remove("hot"); nodeEls[i].classList.add("done"); }
-  function outcomeOn(j) {
-    $("outcome").innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="okck" d="M4 12l5 5 11-11"/></svg> ' + esc(j[4]);
-    $("outcome").style.visibility = "visible"; $("outcome").classList.remove("pop"); void $("outcome").offsetWidth; $("outcome").classList.add("pop");
-  }
-  function play(first) {
-    timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(pk);
-    var j = jobs[cur], steps = j[3], instant = first === true || reduce;
-    $("runTitle").textContent = "Agent run · " + j[0];
-    var flow = j[2] === "flow";
-    if (flow) buildFlow(); else buildScene(j[2]);
-    $("steps").innerHTML = steps.map(function (s) { return '<div class="step' + (instant ? " on" : "") + '" role="listitem"><span class="who' + (s[0] === "Agent" ? " ai" : "") + '">' + s[0] + '</span><span class="tx">' + (instant ? esc(s[1]) : "") + "</span></div>"; }).join("");
-    $("scnA").innerHTML = btns(jobA); $("scnB").innerHTML = btns(jobB);
-    var prog = $("prog"), STEP = flow ? 3200 : 2100, total = 500 + steps.length * STEP;
-    prog.style.transition = "none"; prog.style.width = instant ? "100%" : "0";
-    if (instant) { if (flow) flowInstant(steps); else nodeEls.forEach(function (g) { g.classList.add("done"); }); outcomeOn(j); return; }
-    $("outcome").style.visibility = "hidden";
-    void prog.offsetWidth; prog.style.transition = "width " + total + "ms linear"; prog.style.width = "100%";
-    var rows = $("steps").children;
-    steps.forEach(function (s, i) {
-      if (flow) { timers.push(setTimeout(function () { flowRun(i, s, rows[i]); }, 500 + i * STEP)); return; }
-      timers.push(setTimeout(function () {
-        var ni = s[2], from, to, agent = s[0] === "Agent";
-        from = agent ? HUB : pos[ni]; to = agent ? pos[ni] : HUB;
-        edgeEls[ni].classList.add("hot"); ripple(agent ? HUB : pos[ni], agent ? "" : "ext");
-        timers.push(setTimeout(function () {
-          packet(from, to, 750, function () {
-            edgeEls[ni].classList.remove("hot");
-            ripple(agent ? pos[ni] : HUB, agent ? "" : "ext"); nodeEls[ni].classList.add("hot"); nodeEls[ni].classList.remove("pop"); void nodeEls[ni].getBoundingClientRect(); nodeEls[ni].classList.add("pop");
-            timers.push(setTimeout(function () { doneMark(ni); }, 900));
-            rows[i].classList.add("on"); typeInto(rows[i].lastChild, s[1]);
-          });
-        }, 250));
-      }, 500 + i * STEP));
-    });
-    timers.push(setTimeout(function () { burst(); outcomeOn(j); }, total - 300));
-  }
-  function pick(e) { var b = e.target.closest("button"); if (b) { cur = b.dataset.k; play(); } }
-  $("scnA").addEventListener("click", pick); $("scnB").addEventListener("click", pick); $("replay").addEventListener("click", function () { play(); });
-  var started = false;
-  if (window.IntersectionObserver) {
-    new IntersectionObserver(function (en, ob) { if (en[0].isIntersecting && !started) { started = true; play(); ob.disconnect(); } }, { root: frame, threshold: 0.35 }).observe($("agents"));
-  }
-  /* drawn finished first, so nothing is blank before the section scrolls into view */
-  play(true);
-
+  agentExample.addEventListener("change", showAgentExample);
+  showAgentExample();
   /* stock: metal loss by worker, department, date or item code. Loss % is computed; the limit is per metal. */
   var limits = { Gold: 1.0, Platinum: 0.8, Silver: 1.5, Other: 2.0 };
   var rows = [
