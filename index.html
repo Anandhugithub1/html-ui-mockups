@@ -142,53 +142,6 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-demo { margin-top: 22px; }
 .agent-demo .agent-demo-head { justify-content: flex-start; padding: 13px 16px; }
 .agent-demo-head h3 { font-size: 14px; font-weight: 700; }
-.agent-network {
-  position: relative; height: clamp(204px, 25cqw, 232px); border-bottom: 3px solid #0f6e7f;
-  background: radial-gradient(circle, #ccdce8 1px, transparent 1.4px) 0 0 / 16px 16px, #f3f8fb;
-}
-.agent-network-edges { position: absolute; inset: 0; width: 100%; height: 100%; }
-.agent-network-link, .agent-network-signal { fill: none; stroke-width: 2; }
-.agent-network-link { stroke: #9eb3c3; stroke-dasharray: 4 6; }
-.agent-network-signal { stroke: #18816d; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
-.agent-network-core, .agent-network-node, .agent-network-packet {
-  position: absolute; transform: translate(-50%, -50%);
-}
-.agent-network-core {
-  z-index: 2; left: 50%; top: 63%; display: grid; place-items: center; width: clamp(60px, 13cqw, 82px); aspect-ratio: 1;
-  border-radius: 50%; color: #fff; background: #0f293c; font-size: clamp(14px, 3cqw, 18px);
-  font-weight: 700; box-shadow: 0 0 0 7px #dceef2, 0 4px 14px #163e5533;
-}
-.agent-network-core::before { content: ""; position: absolute; inset: -12px; border: 1px dashed #6aa9b3; border-radius: 50%; }
-.agent-network-node {
-  z-index: 2; top: var(--y); left: var(--x); display: grid; place-items: center; width: min(26%, 182px); min-height: 43px;
-  padding: 6px; border: 1px solid #a3b9c9; border-radius: 10px; background: var(--bg); color: var(--ink);
-  font-size: clamp(12px, 3cqw, 17px); font-weight: 650; text-align: center;
-}
-.agent-network-check {
-  position: absolute; top: -8px; right: -7px; display: grid; place-items: center; width: 19px; height: 19px;
-  border-radius: 50%; background: #147646; color: #fff; font-size: 12px; line-height: 1; opacity: 0;
-}
-.agent-network-packet {
-  z-index: 1; left: 50%; top: 63%; width: 8px; height: 8px; border: 1px solid #fff;
-  border-radius: 50%; background: #0f6e7f; box-shadow: 0 0 0 2px #bfe3ea; opacity: 0;
-}
-.agent-demo.is-playing .agent-network-signal { animation: agent-network-link .52s var(--start) ease-in-out both; }
-.agent-demo.is-playing .agent-network-packet { animation: agent-network-packet .52s var(--start) ease-in-out; }
-.agent-demo.is-playing .agent-network-packet.inbound { animation-direction: reverse; }
-.agent-demo.is-playing .agent-network-node { animation: agent-network-complete .2s calc(var(--start) + 510ms) ease-out both; }
-.agent-demo.is-playing .agent-network-check { animation: agent-network-check .2s calc(var(--start) + 510ms) ease-out both; }
-.agent-demo.is-playing .agent-network-core { animation: agent-network-hub 3.4s ease-in-out both; }
-@keyframes agent-network-link { from { opacity: .8; } to { stroke-dashoffset: 0; opacity: .7; } }
-@keyframes agent-network-packet {
-  0% { opacity: 0; }
-  15%, 82% { opacity: 1; }
-  100% { left: var(--x); top: var(--y); opacity: 0; }
-}
-@keyframes agent-network-complete { to { border-color: #218854; background: #fff; } }
-@keyframes agent-network-check { to { opacity: 1; } }
-@keyframes agent-network-hub {
-  16%, 50%, 83% { box-shadow: 0 0 0 10px #cfe8ec, 0 4px 16px #0f6e7f46; }
-}
 .agent-activity { margin: 0; padding: 0; list-style: none; }
 .agent-activity li { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
 .agent-activity li > span {
@@ -203,23 +156,53 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-result span { margin-right: 4px; }
 .agent-demo.is-playing .agent-result { animation: agent-order-done .3s 3.4s ease-out both; }
 @keyframes agent-order-done { to { background: #dff2e8; } }
-@media (prefers-reduced-motion: reduce) {
-  .agent-demo.is-playing :is(.agent-network-packet, .agent-network-core, .agent-activity li) { animation: none; }
-  .agent-demo.is-playing :is(.agent-network-signal, .agent-network-node, .agent-network-check, .agent-result) { animation-timing-function: step-end; }
-}
-.agent-production-title { margin-top: 32px; font-size: 18px; font-weight: 700; }
 .agent-canvas {
-  margin-top: 20px; padding: 14px; border: 1px solid var(--line); border-radius: 12px;
-  background: radial-gradient(circle, #c9d8e5 1px, transparent 1.2px) 0 0 / 16px 16px, #edf3f8;
+  padding: 16px 14px; border-bottom: 3px solid #0f6e7f;
+  background: radial-gradient(circle, #ccdce8 1px, transparent 1.4px) 0 0 / 16px 16px, #f3f8fb;
+}
+.agent-hub {
+  position: relative; z-index: 2; grid-column: 1 / -1; grid-row: 1; place-self: center;
+  display: grid; place-items: center; width: 77px; aspect-ratio: 1; border-radius: 50%;
+  color: #fff; background: #0f293c; font-size: 17px; font-weight: 700;
+  box-shadow: 0 0 0 7px #dceef2, 0 4px 14px #163e5533;
+}
+.agent-hub::before, .agent-hub::after {
+  content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+}
+.agent-hub::before { inset: -12px; border: 1px dashed #6aa9b3; }
+.agent-hub::after { inset: -6px; border: 2px solid #56a6af; opacity: 0; }
+.agent-spoke path { fill: none; stroke: #9eb6c5; stroke-width: 1.6; stroke-dasharray: 4 6; stroke-linecap: round; }
+.agent-spoke .agent-spoke-signal { stroke: #168171; stroke-width: 2.4; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+.agent-demo.is-playing .agent-spoke-signal { animation: agent-production-link .6s var(--start) ease-in-out both; }
+.agent-demo.is-playing .agent-hub::after { animation: agent-production-pulse .94s ease-out 4; }
+.agent-demo.is-playing .agent-node { animation: agent-production-check .28s var(--start) ease-out both; }
+.agent-node::after {
+  content: ""; position: absolute; top: -6px; right: -5px; width: 17px; height: 17px; border-radius: 50%;
+  background: #177848 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4 8 2.5 2.5L12 5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 13px no-repeat;
+  opacity: 0;
+}
+.agent-demo.is-playing .agent-node::after { animation: agent-production-badge .22s calc(var(--start) + 120ms) ease-out both; }
+@keyframes agent-production-link { from { opacity: .8; } to { stroke-dashoffset: 0; opacity: .62; } }
+@keyframes agent-production-pulse {
+  from { opacity: .6; transform: scale(.97); }
+  to { opacity: 0; transform: scale(1.32); }
+}
+@keyframes agent-production-check { to { border-color: #218854; } }
+@keyframes agent-production-badge { to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .agent-demo.is-playing .agent-hub::after { animation: none; }
+  .agent-demo.is-playing .agent-activity li { animation: none; }
+  .agent-demo.is-playing :is(.agent-spoke-signal, .agent-node, .agent-result),
+  .agent-demo.is-playing .agent-node::after { animation-timing-function: step-end; }
 }
 .agent-graph {
   display: grid; position: relative; grid-template-columns: minmax(0, .83fr) minmax(0, 1.55fr);
-  gap: 14px 18px; padding-inline: 2px;
+  gap: 14px 18px; padding-inline: 16px 9px;
 }
 .agent-steps { display: contents; list-style: none; }
 .agent-node, .agent-entry {
   position: relative; z-index: 1; display: grid; align-content: center; min-width: 0; min-height: 54px;
-  grid-row: var(--mobile-row); padding: 8px; border: 1px solid var(--node-border); border-radius: 8px;
+  grid-row: calc(var(--mobile-row) + 1); padding: 8px; border: 1px solid var(--node-border); border-radius: 8px;
   color: var(--node-ink); background: var(--node-bg); text-align: center; line-height: 1.2;
 }
 .agent-node { grid-column: 2; border-inline-start: 3px solid var(--node-accent); }
@@ -240,7 +223,7 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 .agent-edges { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .agent-edges .agent-route-casing,
 .agent-edges .agent-route { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.agent-edges .agent-route-casing { stroke: #edf3f8; stroke-width: 7; }
+.agent-edges .agent-route-casing { stroke: #f3f8fb; stroke-width: 7; }
 .agent-edges .agent-route { stroke: #425e75; stroke-width: 1.6; marker-end: url(#agent-arrow); }
 .agent-edges .agent-route[data-branch] { stroke: #687f93; stroke-dasharray: 4 4; marker-end: url(#agent-entry-arrow); }
 
@@ -254,8 +237,9 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 }
 @container (min-width: 720px) {
   .agent-canvas { padding: 16px 20px; }
-  .agent-graph { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px 20px; padding-inline: 8px 20px; }
+  .agent-graph { grid-template-columns: repeat(2, minmax(0, 1fr)) 80px repeat(2, minmax(0, 1fr)); gap: 26px 20px; padding-inline: 8px 20px; }
   .agent-node, .agent-entry { grid-column: var(--col); grid-row: var(--row, 1); }
+  .agent-hub { grid-column: 3; grid-row: 3 / 5; }
 }
 .replay { background: none; border: 1px solid var(--line2); border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 500; min-height: 32px; }
 .replay:hover { background: var(--soft); }
@@ -479,51 +463,9 @@ details.card[open] p { animation: pop .35s ease; }
 <section class="sec" id="agents"><div class="wrap">
   <h2 class="t">See an AI agent at work</h2>
   <div class="win agent-demo">
-    <div class="top agent-demo-head"><h3>Agent run · Place and track orders</h3></div>
-    <div class="agent-network" role="group" aria-label="The agent connects Customer, Stock, Purchasing and Supplier">
-      <svg class="agent-network-edges" viewBox="0 0 1000 260" preserveAspectRatio="none" aria-hidden="true">
-        <path class="agent-network-link" d="M150 163.8L500 163.8" vector-effect="non-scaling-stroke"/>
-        <path class="agent-network-signal" d="M150 163.8L500 163.8" style="--start:0ms" pathLength="1" vector-effect="non-scaling-stroke"/>
-        <path class="agent-network-link" d="M500 163.8L300 62.400000000000006" vector-effect="non-scaling-stroke"/>
-        <path class="agent-network-signal" d="M500 163.8L300 62.400000000000006" style="--start:720ms" pathLength="1" vector-effect="non-scaling-stroke"/>
-        <path class="agent-network-link" d="M500 163.8L700 62.400000000000006" vector-effect="non-scaling-stroke"/>
-        <path class="agent-network-signal" d="M500 163.8L700 62.400000000000006" style="--start:1440ms" pathLength="1" vector-effect="non-scaling-stroke"/>
-        <path class="agent-network-link" d="M850 163.8L500 163.8" vector-effect="non-scaling-stroke"/>
-        <path class="agent-network-signal" d="M850 163.8L500 163.8" style="--start:2160ms" pathLength="1" vector-effect="non-scaling-stroke"/>
-        <path class="agent-network-signal" d="M500 163.8L150 163.8" style="--start:2880ms" pathLength="1" vector-effect="non-scaling-stroke"/>
-      </svg>
-      <div class="agent-network-node" style="--x:15%;--y:63%;--start:0ms">
-        Customer<span class="agent-network-check" aria-hidden="true">✓</span>
-      </div>
-      <span class="agent-network-packet inbound" style="--x:15%;--y:63%;--start:0ms" aria-hidden="true"></span>
-      <div class="agent-network-node" style="--x:30%;--y:24%;--start:720ms">
-        Stock<span class="agent-network-check" aria-hidden="true">✓</span>
-      </div>
-      <span class="agent-network-packet" style="--x:30%;--y:24%;--start:720ms" aria-hidden="true"></span>
-      <div class="agent-network-node" style="--x:70%;--y:24%;--start:1440ms">
-        Purchasing<span class="agent-network-check" aria-hidden="true">✓</span>
-      </div>
-      <span class="agent-network-packet" style="--x:70%;--y:24%;--start:1440ms" aria-hidden="true"></span>
-      <div class="agent-network-node" style="--x:85%;--y:63%;--start:2160ms">
-        Supplier<span class="agent-network-check" aria-hidden="true">✓</span>
-      </div>
-      <span class="agent-network-packet inbound" style="--x:85%;--y:63%;--start:2160ms" aria-hidden="true"></span>
-      <span class="agent-network-packet" style="--x:15%;--y:63%;--start:2880ms" aria-hidden="true"></span>
-      <div class="agent-network-core">Agent</div>
-    </div>
-    <ol class="agent-activity" role="list" aria-label="Order activity">
-      <li style="--start:0ms"><span>Customer</span><p>Asks for 100 rings.</p></li>
-      <li style="--start:720ms"><span class="is-agent">Agent</span><p>Creates sales order SO-1042 and checks metal and stone stock.</p></li>
-      <li style="--start:1440ms"><span class="is-agent">Agent</span><p>Orders the missing 24K gold from the metal supplier on WhatsApp.</p></li>
-      <li style="--start:2160ms"><span>Supplier</span><p>Confirms delivery for Thursday.</p></li>
-      <li style="--start:2880ms"><span class="is-agent">Agent</span><p>Sends the customer a delivery update.</p></li>
-    </ol>
-    <p class="agent-result"><span aria-hidden="true">✓</span> Order placed and tracked.</p>
-  </div>
+    <div class="top agent-demo-head"><h3>Agent run · Coordinate production</h3></div>
+    <div class="agent-canvas">
 
-  <h3 class="agent-production-title">Full production workflow</h3>
-
-  <div class="agent-canvas">
     <div class="agent-graph">
       <svg class="agent-edges" aria-hidden="true">
         <defs>
@@ -531,26 +473,34 @@ details.card[open] p { animation: pop .35s ease; }
           <marker id="agent-entry-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerUnits="userSpaceOnUse" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4 0 8 2 4Z" fill="#687f93"/></marker>
         </defs>
 
+        <g class="agent-spokes">
+          <g class="agent-spoke" data-step="3"><path/><path class="agent-spoke-signal" pathLength="1"/></g>
+          <g class="agent-spoke" data-step="7"><path/><path class="agent-spoke-signal" pathLength="1"/></g>
+          <g class="agent-spoke" data-step="11"><path/><path class="agent-spoke-signal" pathLength="1"/></g>
+          <g class="agent-spoke" data-step="15"><path/><path class="agent-spoke-signal" pathLength="1"/></g>
+        </g>
+
         <g class="agent-process-edges"></g>
       </svg>
+      <div class="agent-hub">Agent</div>
       <div class="agent-entry" data-entry="1" style="--col:1;--mobile-row:1"><strong>New SKU</strong><span>Start at step 1</span></div>
-      <div class="agent-entry" data-entry="4" style="--col:3;--mobile-row:4"><strong>Master exists</strong><span>Start at step 4</span></div>
-      <div class="agent-entry" data-entry="5" style="--col:4;--mobile-row:5"><strong>Rubber mold exists</strong><span>Reorder at step 5</span></div>
+      <div class="agent-entry" data-entry="4" style="--col:4;--mobile-row:4"><strong>Master exists</strong><span>Start at step 4</span></div>
+      <div class="agent-entry" data-entry="5" style="--col:5;--mobile-row:5"><strong>Rubber mold exists</strong><span>Reorder at step 5</span></div>
       <ol class="agent-steps" role="list" aria-label="Production steps">
         <li class="agent-node design" style="--col:1;--row:2;--mobile-row:1"><strong>1. CAD</strong><span>3D design</span></li>
         <li class="agent-node design" style="--col:2;--row:2;--mobile-row:2"><strong>2. 3D printing</strong><span>1 wax piece per SKU</span></li>
-        <li class="agent-node design" style="--col:3;--row:2;--mobile-row:3"><strong>3. Master model</strong><span>Silver or brass</span></li>
-        <li class="agent-node design" style="--col:4;--row:2;--mobile-row:4"><strong>4. Rubber mold</strong><span>Made from the master</span></li>
-        <li class="agent-node casting" style="--col:4;--row:3;--mobile-row:5"><strong>5. Wax injection</strong><span>About 100 wax pieces</span></li>
-        <li class="agent-node casting" style="--col:3;--row:3;--mobile-row:6"><strong>6. Wax setting</strong><span>Prepare wax pieces</span></li>
+        <li class="agent-node design" style="--col:4;--row:2;--mobile-row:3"><strong>3. Master model</strong><span>Silver or brass</span></li>
+        <li class="agent-node design" style="--col:5;--row:2;--mobile-row:4"><strong>4. Rubber mold</strong><span>Made from the master</span></li>
+        <li class="agent-node casting" style="--col:5;--row:3;--mobile-row:5"><strong>5. Wax injection</strong><span>About 100 wax pieces</span></li>
+        <li class="agent-node casting" style="--col:4;--row:3;--mobile-row:6"><strong>6. Wax setting</strong><span>Prepare wax pieces</span></li>
         <li class="agent-node casting" style="--col:2;--row:3;--mobile-row:7"><strong>7. Wax tree</strong><span>Assemble the tree</span></li>
         <li class="agent-node casting" style="--col:1;--row:3;--mobile-row:8"><strong>8. Casting</strong><span>Cast and clean</span></li>
         <li class="agent-node casting" style="--col:1;--row:4;--mobile-row:9"><strong>9. Tree cutting</strong><span>Cut pieces from the tree</span></li>
         <li class="agent-node finish" style="--col:2;--row:4;--mobile-row:10"><strong>10. Finishing</strong><span>Filing, tumbling, pre-polish and polish</span></li>
-        <li class="agent-node finish" style="--col:3;--row:4;--mobile-row:11"><strong>11. Stone setting</strong><span>Set stones and diamonds</span></li>
-        <li class="agent-node finish" style="--col:4;--row:4;--mobile-row:12"><strong>12. Plating</strong><span>Color or rhodium finish</span></li>
-        <li class="agent-node finish" style="--col:4;--row:5;--mobile-row:13"><strong>13. Quality control</strong><span>Inspect finished pieces</span></li>
-        <li class="agent-node finish" style="--col:3;--row:5;--mobile-row:14"><strong>14. Packing &amp; tagging</strong><span>Prepare for dispatch</span></li>
+        <li class="agent-node finish" style="--col:4;--row:4;--mobile-row:11"><strong>11. Stone setting</strong><span>Set stones and diamonds</span></li>
+        <li class="agent-node finish" style="--col:5;--row:4;--mobile-row:12"><strong>12. Plating</strong><span>Color or rhodium finish</span></li>
+        <li class="agent-node finish" style="--col:5;--row:5;--mobile-row:13"><strong>13. Quality control</strong><span>Inspect finished pieces</span></li>
+        <li class="agent-node finish" style="--col:4;--row:5;--mobile-row:14"><strong>14. Packing &amp; tagging</strong><span>Prepare for dispatch</span></li>
         <li class="agent-node finish" style="--col:2;--row:5;--mobile-row:15"><strong>15. Shipping</strong><span>Send to the customer</span></li>
       </ol>
     </div>
@@ -559,7 +509,16 @@ details.card[open] p { animation: pop .35s ease; }
       <li class="casting">Wax &amp; casting</li>
       <li class="finish">Finishing &amp; dispatch</li>
     </ul>
+    </div>
+    <ol class="agent-activity" role="list" aria-label="Production activity">
+      <li style="--start:0ms"><span class="is-agent">Agent</span><p>Checks the SKU and routes design, printing, and mold preparation.</p></li>
+      <li style="--start:940ms"><span>Casting</span><p>Receives the work order for wax preparation, casting, and tree cutting.</p></li>
+      <li style="--start:1880ms"><span class="is-agent">Agent</span><p>Coordinates finishing, stone setting, plating, and quality control.</p></li>
+      <li style="--start:2820ms"><span>Dispatch</span><p>Packs and tags the finished pieces for shipping.</p></li>
+    </ol>
+    <p class="agent-result"><span aria-hidden="true">✓</span> Production handoffs coordinated from CAD to shipping.</p>
   </div>
+
 </div></section>
 <section class="sec alt" id="stock"><div class="wrap feat">
   <div>
@@ -768,6 +727,14 @@ details.card[open] p { animation: pop .35s ease; }
   var agentEdges = agentGraph.querySelector(".agent-process-edges");
   var agentNodes = Array.from(agentGraph.querySelectorAll(".agent-node"));
   var agentEntries = Array.from(agentGraph.querySelectorAll(".agent-entry"));
+  var agentHub = agentGraph.querySelector(".agent-hub");
+  var agentSpokes = Array.from(agentGraph.querySelectorAll(".agent-spoke"));
+  var productionStarts = [0, 4, 9, 13];
+  agentNodes.forEach(function (node, index) {
+    var phase = index < 4 ? 0 : index < 9 ? 1 : index < 13 ? 2 : 3;
+    node.style.setProperty("--start", (phase * 940 + 410 + (index - productionStarts[phase]) * 55) + "ms");
+  });
+
   function drawAgentFlow() {
     var bounds = agentGraph.getBoundingClientRect();
     var desktop = agentEntries[0].offsetTop === agentEntries[1].offsetTop;
@@ -837,21 +804,43 @@ details.card[open] p { animation: pop .35s ease; }
         edge([[from.x, from.bottom], [from.x, turn], [to.x, turn], [to.x, to.top - 3]], true);
       }
     });
+    var hub = box(agentHub);
+    agentSpokes.forEach(function (spoke, index) {
+      var target = nodes[Number(spoke.dataset.step) - 1];
+      var d;
+      if (desktop) {
+        var left = target.x < hub.x;
+        var x = left ? target.right + 3 : target.left - 3;
+        var y = index < 2 ? target.top + 13 : target.bottom - 13;
+        var startX = index === 0 || index === 3 ? hub.x : left ? hub.left + 4 : hub.right - 4;
+        var startY = index === 0 ? hub.top : index === 3 ? hub.bottom : hub.y;
+        var bend = (startX + x) / 2;
+        d = "M" + startX + " " + startY + " C" + bend + " " + startY + " " + bend + " " + y + " " + x + " " + y;
+      } else {
+        var lane = 2 + index * 3.5;
+        var endY = target.y - 10;
+        d = "M" + (hub.left + 8) + " " + (hub.y + 7 + index * 4) +
+          " C" + lane + " " + hub.bottom + " " + lane + " " + hub.bottom + " " + lane + " " + (hub.bottom + 23) +
+          " V" + (endY - 10) + " Q" + lane + " " + endY + " " + (lane + 10) + " " + endY + " H" + (target.left - 3);
+      }
+      spoke.querySelectorAll("path").forEach(function (path) { path.setAttribute("d", d); });
+      spoke.style.setProperty("--start", index * 940 + "ms");
+    });
   }
 
   drawAgentFlow();
   if (window.ResizeObserver) new ResizeObserver(drawAgentFlow).observe(agentGraph);
-  var orderDemo = document.querySelector(".agent-demo");
-  var orderNetwork = orderDemo.querySelector(".agent-network");
+  var productionDemo = document.querySelector(".agent-demo");
+  var productionCanvas = productionDemo.querySelector(".agent-canvas");
   if (window.IntersectionObserver) {
     new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.intersectionRatio >= .4) orderDemo.classList.add("is-playing");
-        else if (!entry.isIntersecting) orderDemo.classList.remove("is-playing");
+        if (entry.intersectionRatio >= .4) productionDemo.classList.add("is-playing");
+        else if (!entry.isIntersecting) productionDemo.classList.remove("is-playing");
       });
-    }, { root: frame, threshold: [0, .4] }).observe(orderNetwork);
+    }, { root: frame, threshold: [0, .4] }).observe(productionCanvas);
   } else {
-    orderDemo.classList.add("is-playing");
+    productionDemo.classList.add("is-playing");
   }
   /* stock: metal loss by worker, department, date or item code. Loss % is computed; the limit is per metal. */
   var limits = { Gold: 1.0, Platinum: 0.8, Silver: 1.5, Other: 2.0 };
