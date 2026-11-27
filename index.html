@@ -140,18 +140,31 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 
 /* agents */
 .agent-demo { margin-top: 22px; --agent-phase-gap: 1450ms; --agent-ease: cubic-bezier(.35, 0, .24, 1); }
-.agent-spoke, .agent-node, .agent-activity li { --phase-start: calc(var(--phase) * var(--agent-phase-gap)); }
+.agent-spoke, .agent-node, .agent-activity > li { --phase-start: calc(var(--phase) * var(--agent-phase-gap)); }
 .agent-demo .agent-demo-head { justify-content: flex-start; padding: 13px 16px; }
 .agent-demo-head h3 { font-size: 14px; font-weight: 700; }
 .agent-activity { margin: 0; padding: 0; list-style: none; }
-.agent-activity li { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
-.agent-activity li > span {
+.agent-activity > li { display: flex; align-items: baseline; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+.agent-activity > li > span {
   flex: none; min-width: 72px; padding: 3px 7px; border-radius: 999px; background: #eaf0f5;
   color: #42566c; text-align: center; font-size: 12px; font-weight: 650;
 }
 .agent-activity .is-agent { background: var(--teal-bg); color: var(--teal-d); }
-.agent-activity p { font-size: 14px; line-height: 1.45; }
-.agent-demo.is-playing .agent-activity li[style] { animation: agent-log-update 1.16s calc(var(--phase-start) + 250ms) var(--agent-ease) both; }
+.agent-step-details, .agent-routes-detail {
+  flex: 1; min-width: 0; display: grid; gap: 8px 22px; margin: 0;
+  color: var(--body); font-size: 14px; line-height: 1.4;
+}
+.agent-step-details { padding-inline-start: 1.7em; }
+.agent-step-details li::marker { color: var(--faint); font-variant-numeric: tabular-nums; }
+.agent-routes-detail { padding: 0; list-style: none; }
+.agent-activity :is(.agent-step-details, .agent-routes-detail) strong { color: var(--ink); font-weight: 650; }
+.agent-activity :is(.agent-step-details, .agent-routes-detail) span { display: block; }
+@container (min-width: 720px) {
+  .agent-step-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .agent-routes-detail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+.agent-demo.is-playing .agent-activity > li[style] { animation: agent-log-update 1.16s calc(var(--phase-start) + 250ms) var(--agent-ease) both; }
 @keyframes agent-log-update { 24%, 73% { background: #eef7f9; } }
 .agent-result { padding: 10px 16px; color: #164f37; background: #eef8f2; font-size: 14px; font-weight: 650; }
 .agent-result span { margin-right: 4px; }
@@ -192,7 +205,7 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 @keyframes agent-production-badge { to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .agent-demo.is-playing .agent-hub::after { animation: none; }
-  .agent-demo.is-playing .agent-activity li[style] { animation: none; }
+  .agent-demo.is-playing .agent-activity > li[style] { animation: none; }
   .agent-demo.is-playing :is(.agent-spoke-signal, .agent-node, .agent-result),
   .agent-demo.is-playing .agent-node::after { animation-timing-function: step-end; }
 }
@@ -442,12 +455,51 @@ details.card[open] p { animation: pop .35s ease; }
       <div class="agent-hub">Agent</div>
     </div>
     <ul class="agent-activity" role="list" aria-label="Production activity and starting routes">
-      <li><span>Routing</span><p>New SKU starts at CAD. An existing master starts at rubber mold. An existing rubber mold starts at wax injection.</p></li>
-      <li style="--phase:0"><span class="is-agent">Design</span><p>CAD, 3D printing, master model, and rubber mold preparation.</p></li>
-      <li style="--phase:1"><span>Casting</span><p>Wax injection, wax setting, wax tree assembly, casting, and tree cutting.</p></li>
-      <li style="--phase:2"><span class="is-agent">Finishing</span><p>Filing, tumbling, pre-polish and polish, followed by stone setting, plating, and quality control.</p></li>
-      <li style="--phase:3"><span>Dispatch</span><p>Pack and tag the finished pieces, then ship them to the customer.</p></li>
+      <li>
+        <span>Routing</span>
+        <ul class="agent-routes-detail" role="list" aria-label="Starting routes">
+          <li><strong>New SKU</strong><span>Start at step 1 · CAD</span></li>
+          <li><strong>Master exists</strong><span>Start at step 4 · Rubber mold</span></li>
+          <li><strong>Rubber mold exists</strong><span>Reorder at step 5 · Wax injection</span></li>
+        </ul>
+      </li>
+      <li style="--phase:0">
+        <span class="is-agent">Design</span>
+        <ol class="agent-step-details" start="1" aria-label="Design steps">
+          <li><strong>CAD</strong><span>Create the 3D design.</span></li>
+          <li><strong>3D printing</strong><span>Print one wax piece per SKU.</span></li>
+          <li><strong>Master model</strong><span>Make the master in silver or brass.</span></li>
+          <li><strong>Rubber mold</strong><span>Make the mold from the master.</span></li>
+        </ol>
+      </li>
+      <li style="--phase:1">
+        <span>Casting</span>
+        <ol class="agent-step-details" start="5" aria-label="Casting steps">
+          <li><strong>Wax injection</strong><span>Make about 100 wax pieces in this example.</span></li>
+          <li><strong>Wax setting</strong><span>Prepare the wax pieces before tree assembly.</span></li>
+          <li><strong>Wax tree</strong><span>Assemble the wax pieces into a tree.</span></li>
+          <li><strong>Casting</strong><span>Cast the pieces and clean them after casting.</span></li>
+          <li><strong>Tree cutting</strong><span>Cut the cast pieces from the tree.</span></li>
+        </ol>
+      </li>
+      <li style="--phase:2">
+        <span class="is-agent">Finishing</span>
+        <ol class="agent-step-details" start="10" aria-label="Finishing steps">
+          <li><strong>Finishing</strong><span>File, tumble, pre-polish, and polish.</span></li>
+          <li><strong>Stone setting</strong><span>Set stones and diamonds.</span></li>
+          <li><strong>Plating</strong><span>Apply the required color or rhodium finish.</span></li>
+          <li><strong>Quality control</strong><span>Inspect the finished pieces.</span></li>
+        </ol>
+      </li>
+      <li style="--phase:3">
+        <span>Dispatch</span>
+        <ol class="agent-step-details" start="14" aria-label="Dispatch steps">
+          <li><strong>Packing &amp; tagging</strong><span>Tag and pack the pieces for dispatch.</span></li>
+          <li><strong>Shipping</strong><span>Send the finished order to the customer.</span></li>
+        </ol>
+      </li>
     </ul>
+
     <p class="agent-result"><span aria-hidden="true">✓</span> Production handoffs coordinated from CAD to shipping.</p>
   </div>
 
