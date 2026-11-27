@@ -173,19 +173,18 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 
 @keyframes agent-progress { to { transform: scaleX(1); } }
 @media (prefers-reduced-motion: reduce) {
-  .agent-canvas .agent-marker { visibility: hidden; }
   .agent-canvas.is-playing .agent-caption:not(.is-final) { animation-name: agent-caption-still; animation-timing-function: step-end; }
   .agent-canvas.is-playing .agent-run-progress span { animation-timing-function: steps(15, end); }
 }
 
 .agent-graph {
   display: grid; position: relative; grid-template-columns: minmax(0, .83fr) minmax(0, 1.55fr);
-  gap: 14px 18px; padding-inline: 2px;
+  gap: 14px 18px; padding-inline: 16px 2px;
 }
 .agent-steps { display: contents; list-style: none; }
 .agent-node, .agent-entry {
   position: relative; z-index: 1; display: grid; align-content: center; min-width: 0; min-height: 54px;
-  grid-row: var(--mobile-row); padding: 8px; border: 1px solid var(--node-border); border-radius: 8px;
+  grid-row: calc(var(--mobile-row) + 1); padding: 8px; border: 1px solid var(--node-border); border-radius: 8px;
   color: var(--node-ink); background: var(--node-bg); text-align: center; line-height: 1.2;
 }
 .agent-node { grid-column: 2; border-inline-start: 3px solid var(--node-accent); }
@@ -214,11 +213,32 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
   fill: none; stroke: var(--trace-color); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round;
   stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0;
 }
-.agent-marker {
-  position: absolute; z-index: 2; inset: 0 auto auto 0; display: grid; place-items: center;
-  width: 29px; height: 20px; border: 2px solid #fff; border-radius: 999px; background: #123450;
-  color: #fff; font-size: 10px; font-weight: 700; line-height: 1;
-  box-shadow: 0 2px 8px #12345050; pointer-events: none;
+.agent-hub {
+  position: relative; z-index: 2; grid-column: 1 / -1; grid-row: 1; place-self: center;
+  display: grid; place-content: center; justify-items: center; width: 70px; height: 70px;
+  border: 1px solid #98c3d8; border-radius: 50%; background: #112e48; color: #fff;
+  box-shadow: 0 0 0 4px #d8eaf4, 0 4px 12px #12345028; line-height: 1.1;
+}
+.agent-hub strong { font-size: 21px; font-weight: 750; }
+.agent-hub span { margin-top: 3px; font-size: 11px; font-weight: 650; color: #cce8f5; }
+.agent-spoke path { fill: none; stroke: var(--node-accent); stroke-width: 1.5; stroke-linecap: round; opacity: .36; }
+.agent-spoke circle { fill: var(--node-accent); }
+.agent-spoke .agent-spoke-signal { stroke-width: 2.4; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; }
+.agent-canvas.is-playing .agent-spoke-signal { animation: agent-hub-send .76s var(--spoke-start) cubic-bezier(.35, .06, .3, 1) both; }
+.agent-canvas.is-playing .agent-hub { animation: agent-hub-breathe var(--agent-duration) ease-in-out both; }
+@keyframes agent-hub-send {
+  from { stroke-dashoffset: 1; opacity: .8; }
+  78% { stroke-dashoffset: 0; opacity: 1; }
+  to { stroke-dashoffset: 0; opacity: .68; }
+}
+@keyframes agent-hub-breathe {
+  0%, 100% { box-shadow: 0 0 0 4px #d8eaf4, 0 4px 12px #12345028; }
+  11%, 38%, 63% { box-shadow: 0 0 0 7px #c6e4ee, 0 0 18px #4a91af40; }
+  23%, 51%, 80% { box-shadow: 0 0 0 4px #d8eaf4, 0 4px 12px #12345028; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .agent-canvas.is-playing .agent-hub { animation: none; }
+  .agent-canvas.is-playing .agent-spoke-signal { animation-timing-function: step-end; }
 }
 .agent-canvas.is-playing .agent-trace { animation: agent-trace var(--agent-hop) var(--departure) linear both; }
 .agent-canvas.is-playing .agent-node { animation: agent-visit .25s var(--arrival) ease-out both; }
@@ -231,7 +251,7 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 @keyframes agent-visit {
   36%, 62% {
     background: var(--node-active); border-color: var(--node-accent);
-    box-shadow: 0 0 0 2px var(--node-accent), 0 0 0 5px var(--node-border);
+    box-shadow: 0 0 0 2px var(--node-border);
   }
   to { background: var(--node-active); border-color: var(--node-accent); }
 }
@@ -286,8 +306,9 @@ h1.t { font-size: 34px; margin-top: 12px; } h2.t { font-size: 28px; margin-top: 
 }
 @container (min-width: 720px) {
   .agent-canvas { padding: 16px 20px; }
-  .agent-graph { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 28px; padding-inline: 8px 20px; }
+  .agent-graph { grid-template-columns: repeat(2, minmax(0, 1fr)) 72px repeat(2, minmax(0, 1fr)); gap: 24px 20px; padding-inline: 8px 20px; }
   .agent-node, .agent-entry { grid-column: var(--col); grid-row: var(--row, 1); }
+  .agent-hub { grid-column: 3; grid-row: 3 / 5; }
 }
 .replay { background: none; border: 1px solid var(--line2); border-radius: 6px; padding: 4px 10px; font-size: 13px; font-weight: 500; min-height: 32px; }
 .replay:hover { background: var(--soft); }
@@ -528,27 +549,32 @@ details.card[open] p { animation: pop .35s ease; }
     <div class="agent-graph">
       <svg class="agent-edges" aria-hidden="true">
         <defs><marker id="agent-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1l5 3-5 3" fill="none" stroke="#60788a" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
-        <g></g>
+        <g class="agent-spokes">
+          <g class="agent-spoke design" data-step="3"><path/><path class="agent-spoke-signal" pathLength="1"/><circle r="2.6"/></g>
+          <g class="agent-spoke casting" data-step="7"><path/><path class="agent-spoke-signal" pathLength="1"/><circle r="2.6"/></g>
+          <g class="agent-spoke finish" data-step="11"><path/><path class="agent-spoke-signal" pathLength="1"/><circle r="2.6"/></g>
+        </g>
+        <g class="agent-process-edges"></g>
       </svg>
-      <span class="agent-marker" aria-hidden="true" hidden>AI</span>
+      <div class="agent-hub"><strong>AI</strong><span>Agent</span></div>
       <div class="agent-entry" data-entry="1" style="--col:1;--mobile-row:1"><strong>New SKU</strong><span>Start at step 1</span></div>
-      <div class="agent-entry" data-entry="4" style="--col:3;--mobile-row:4"><strong>Master exists</strong><span>Start at step 4</span></div>
-      <div class="agent-entry" data-entry="5" style="--col:4;--mobile-row:5"><strong>Rubber mold exists</strong><span>Reorder at step 5</span></div>
+      <div class="agent-entry" data-entry="4" style="--col:4;--mobile-row:4"><strong>Master exists</strong><span>Start at step 4</span></div>
+      <div class="agent-entry" data-entry="5" style="--col:5;--mobile-row:5"><strong>Rubber mold exists</strong><span>Reorder at step 5</span></div>
       <ol class="agent-steps" role="list" aria-label="Production steps">
         <li class="agent-node design" style="--col:1;--row:2;--mobile-row:1"><strong>1. CAD</strong><span>3D design</span></li>
         <li class="agent-node design" style="--col:2;--row:2;--mobile-row:2"><strong>2. 3D printing</strong><span>1 wax piece per SKU</span></li>
-        <li class="agent-node design" style="--col:3;--row:2;--mobile-row:3"><strong>3. Master model</strong><span>Silver or brass</span></li>
-        <li class="agent-node design" style="--col:4;--row:2;--mobile-row:4"><strong>4. Rubber mold</strong><span>Made from the master</span></li>
-        <li class="agent-node casting" style="--col:4;--row:3;--mobile-row:5"><strong>5. Wax injection</strong><span>About 100 wax pieces</span></li>
-        <li class="agent-node casting" style="--col:3;--row:3;--mobile-row:6"><strong>6. Wax setting</strong><span>Prepare wax pieces</span></li>
+        <li class="agent-node design" style="--col:4;--row:2;--mobile-row:3"><strong>3. Master model</strong><span>Silver or brass</span></li>
+        <li class="agent-node design" style="--col:5;--row:2;--mobile-row:4"><strong>4. Rubber mold</strong><span>Made from the master</span></li>
+        <li class="agent-node casting" style="--col:5;--row:3;--mobile-row:5"><strong>5. Wax injection</strong><span>About 100 wax pieces</span></li>
+        <li class="agent-node casting" style="--col:4;--row:3;--mobile-row:6"><strong>6. Wax setting</strong><span>Prepare wax pieces</span></li>
         <li class="agent-node casting" style="--col:2;--row:3;--mobile-row:7"><strong>7. Wax tree</strong><span>Assemble the tree</span></li>
         <li class="agent-node casting" data-agent-delay style="--col:1;--row:3;--mobile-row:8"><strong>8. Casting</strong><span class="agent-node-detail"><span>Cast and clean</span><span class="agent-delay-note" aria-hidden="true">6-hour delay</span></span></li>
         <li class="agent-node casting" style="--col:1;--row:4;--mobile-row:9"><strong>9. Tree cutting</strong><span>Cut pieces from the tree</span></li>
         <li class="agent-node finish" style="--col:2;--row:4;--mobile-row:10"><strong>10. Finishing</strong><span>Filing, tumbling, pre-polish and polish</span></li>
-        <li class="agent-node finish" style="--col:3;--row:4;--mobile-row:11"><strong>11. Stone setting</strong><span>Set stones and diamonds</span></li>
-        <li class="agent-node finish" style="--col:4;--row:4;--mobile-row:12"><strong>12. Plating</strong><span>Color or rhodium finish</span></li>
-        <li class="agent-node finish" style="--col:4;--row:5;--mobile-row:13"><strong>13. Quality control</strong><span>Inspect finished pieces</span></li>
-        <li class="agent-node finish" style="--col:3;--row:5;--mobile-row:14"><strong>14. Packing &amp; tagging</strong><span>Prepare for dispatch</span></li>
+        <li class="agent-node finish" style="--col:4;--row:4;--mobile-row:11"><strong>11. Stone setting</strong><span>Set stones and diamonds</span></li>
+        <li class="agent-node finish" style="--col:5;--row:4;--mobile-row:12"><strong>12. Plating</strong><span>Color or rhodium finish</span></li>
+        <li class="agent-node finish" style="--col:5;--row:5;--mobile-row:13"><strong>13. Quality control</strong><span>Inspect finished pieces</span></li>
+        <li class="agent-node finish" style="--col:4;--row:5;--mobile-row:14"><strong>14. Packing &amp; tagging</strong><span>Prepare for dispatch</span></li>
         <li class="agent-node finish" style="--col:2;--row:5;--mobile-row:15"><strong>15. Shipping</strong><span>Send to the customer</span></li>
       </ol>
     </div>
@@ -764,12 +790,11 @@ details.card[open] p { animation: pop .35s ease; }
 
   var agentCanvas = document.querySelector(".agent-canvas");
   var agentGraph = agentCanvas.querySelector(".agent-graph");
-  var agentMarker = agentGraph.querySelector(".agent-marker");
-  var agentEdges = agentGraph.querySelector(".agent-edges g");
+  var agentHub = agentGraph.querySelector(".agent-hub");
+  var agentSpokes = Array.from(agentGraph.querySelectorAll(".agent-spoke"));
+  var agentEdges = agentGraph.querySelector(".agent-process-edges");
   var agentNodes = Array.from(agentGraph.querySelectorAll(".agent-node"));
   var agentEntries = Array.from(agentGraph.querySelectorAll(".agent-entry"));
-  var agentTrip;
-  var agentStops;
   var agentHop = parseFloat(getComputedStyle(agentCanvas).getPropertyValue("--agent-hop"));
   var agentDelayStep = agentNodes.findIndex(function (node) { return node.hasAttribute("data-agent-delay"); });
   var agentHold = 900;
@@ -857,53 +882,37 @@ details.card[open] p { animation: pop .35s ease; }
         edge([[from.x, from.bottom], [from.x, turn], [to.x, turn], [to.x, to.top - 3]], i === 0 ? 0 : -1, true);
       }
     });
-    function markerPosition(node) {
-      return desktop ? [node.x, node.top - 4] : [node.left - 5, node.top + 12];
-    }
-    function markerFrame(point, time, color) {
-      return {
-        offset: time / agentDuration,
-        transform: "translate(" + point[0] + "px," + point[1] + "px) translate(-50%, -50%)",
-        backgroundColor: color,
-        easing: "cubic-bezier(.22, .7, .25, 1)"
-      };
-    }
-    var previous = entries[0];
-    var start = desktop ? markerPosition(previous) : [previous.x, previous.top + 8];
-    agentStops = [markerFrame(start, 0, "#123450")];
-    nodes.forEach(function (node, index) {
-      var end = markerPosition(node);
-      var color = agentColors[index];
-      var departure = agentDepartures[index];
-      var nextDeparture = agentDepartures[index + 1] ?? agentDuration;
-      if (desktop && previous.top !== node.top) {
-        var gutter = node.x < bounds.width / 2 ? node.left - 6 : node.right + 6;
-        agentStops.push(markerFrame([gutter, start[1]], departure + .18 * agentHop, color));
-        agentStops.push(markerFrame([gutter, end[1]], departure + .49 * agentHop, color));
+    var hub = box(agentHub);
+    var spokeStarts = [0, agentDepartures[4], delayStart + 270];
+    agentSpokes.forEach(function (spoke, index) {
+      var target = nodes[Number(spoke.dataset.step) - 1];
+      var points;
+      if (desktop) {
+        var left = target.x < hub.x;
+        var x = left ? target.right + 4 : target.left - 4;
+        var y = target.top + (index === 2 ? 35 : 14);
+        var startX = index === 0 ? hub.x : left ? hub.left + 5 : hub.right - 5;
+        var startY = index === 0 ? hub.top : hub.y;
+        var bend = (startX + x) / 2;
+        points = { d: "M" + startX + " " + startY + " C" + bend + " " + startY + " " + bend + " " + y + " " + x + " " + y, x: x, y: y };
+      } else {
+        var lane = 3 + index * 4;
+        var endX = target.left - 4;
+        var endY = target.y - 11;
+        points = {
+          d: "M" + (hub.left + 8) + " " + (hub.y + 9 + index * 5) +
+            " C" + lane + " " + (hub.bottom + 4) + " " + lane + " " + (hub.bottom + 8) + " " + lane + " " + (hub.bottom + 25) +
+            " V" + (endY - 9) + " Q" + lane + " " + endY + " " + (lane + 12) + " " + endY + " H" + endX,
+          x: endX, y: endY
+        };
       }
-      agentStops.push(markerFrame(end, departure + agentArrival * agentHop, color));
-      if (index === agentDelayStep) {
-        color = "#a85220";
-        agentStops.push(markerFrame(end, delayStart + 80, color));
-      }
-      agentStops.push(markerFrame(end, nextDeparture, color));
-      previous = node;
-      start = end;
+      spoke.querySelectorAll("path").forEach(function (path) { path.setAttribute("d", points.d); });
+      var terminal = spoke.querySelector("circle");
+      terminal.setAttribute("cx", points.x);
+      terminal.setAttribute("cy", points.y);
+      spoke.style.setProperty("--spoke-start", spokeStarts[index] + "ms");
     });
-    if (agentTrip) {
-      var elapsed = agentTrip.currentTime;
-      agentTrip.effect.setKeyframes(agentStops);
-      agentTrip.currentTime = elapsed;
-    }
-  }
 
-  function playAgentFlow() {
-    if (agentTrip) return;
-    agentCanvas.classList.add("is-playing");
-    agentMarker.hidden = false;
-    agentTrip = agentMarker.animate(agentStops, {
-      duration: agentDuration, fill: "both"
-    });
   }
 
   drawAgentFlow();
@@ -911,17 +920,12 @@ details.card[open] p { animation: pop .35s ease; }
   if (window.IntersectionObserver) {
     new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.intersectionRatio >= 0.2) playAgentFlow();
-        else if (!entry.isIntersecting && agentTrip) {
-          agentTrip.cancel();
-          agentTrip = null;
-          agentCanvas.classList.remove("is-playing");
-          agentMarker.hidden = true;
-        }
+        if (entry.intersectionRatio >= 0.2) agentCanvas.classList.add("is-playing");
+        else if (!entry.isIntersecting) agentCanvas.classList.remove("is-playing");
       });
     }, { root: frame, threshold: [0, 0.2] }).observe(agentCanvas);
   } else {
-    playAgentFlow();
+    agentCanvas.classList.add("is-playing");
   }
   /* stock: metal loss by worker, department, date or item code. Loss % is computed; the limit is per metal. */
   var limits = { Gold: 1.0, Platinum: 0.8, Silver: 1.5, Other: 2.0 };
